@@ -117,8 +117,8 @@ class GamePanel extends JPanel implements ActionListener{
                 numberOfHexagonsX=numberOfHexagonsX-1;
             }
             numberOfHexagonsX=maff.NumberOfHexagonsX(modifier, SCREEN_WIDTH);
-            xConstant=(int)(SCREEN_HEIGHT-(numberOfHexagonsX)*(174*modifier))/2;
             yConstant=SCREEN_WIDTH/2;
+            xConstant=(int)(SCREEN_HEIGHT-(numberOfHexagonsX)*(174*modifier))/2;
             flip=false;
         }
     }
