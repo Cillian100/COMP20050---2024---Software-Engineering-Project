@@ -64,8 +64,8 @@ class GamePanel extends JPanel implements ActionListener{
         g.setColor(Color.yellow);
         int numberOfHexagonsX=maff.NumberOfHexagonsX(modifier, SCREEN_WIDTH);
         int numberOfHexagonsY=maff.NumberOfHexagonsY(modifier, SCREEN_HEIGHT);
-        xConstant=(int)(1000-(numberOfHexagonsX)*(174*modifier))/2;
-        yConstant=500;
+        xConstant=(int)(SCREEN_HEIGHT-(numberOfHexagonsX)*(174*modifier))/2;
+        yConstant=SCREEN_WIDTH/2;
 
         int firstReference=0;
         boolean flip=true;
@@ -117,8 +117,8 @@ class GamePanel extends JPanel implements ActionListener{
                 numberOfHexagonsX=numberOfHexagonsX-1;
             }
             numberOfHexagonsX=maff.NumberOfHexagonsX(modifier, SCREEN_WIDTH);
-            xConstant=(int)(1000-(numberOfHexagonsX)*(174*modifier))/2;
-            yConstant=500;
+            xConstant=(int)(SCREEN_HEIGHT-(numberOfHexagonsX)*(174*modifier))/2;
+            yConstant=SCREEN_WIDTH/2;
             flip=false;
         }
     }
