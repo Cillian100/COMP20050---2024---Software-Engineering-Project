@@ -9,17 +9,22 @@ import java.lang.Math;
 class GamePanel extends JPanel implements ActionListener{
     Timer timer;
     QuickMaff maff = new QuickMaff();
-    final static int SCREEN_HEIGHT = 900;
-    final static int SCREEN_WIDTH = 900;
+    Toolkit tk = Toolkit.getDefaultToolkit();
+    Dimension screenSize = tk.getScreenSize();
+    int SCREEN_HEIGHT;
+    int SCREEN_WIDTH;
     int xConstant=SCREEN_HEIGHT/2;
     int yConstant=SCREEN_WIDTH/2;
-    double modifier=maff.getModifier(SCREEN_HEIGHT, SCREEN_WIDTH);
+    double modifier;
     int x[];
     int y[];
     int counter;
 
     GamePanel(){
-        this.setPreferredSize(new Dimension(SCREEN_HEIGHT, SCREEN_WIDTH));
+        SCREEN_HEIGHT = this.screenSize.height-80;
+        SCREEN_WIDTH = this.screenSize.height-80;
+        modifier = maff.getModifier(SCREEN_HEIGHT, SCREEN_WIDTH);
+        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
         this.setBackground(Color.black);
         this.setFocusable(true);
         startGame();
