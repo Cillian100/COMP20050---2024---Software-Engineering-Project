@@ -9,7 +9,7 @@ import java.lang.Math;
 class GamePanel extends JPanel implements ActionListener{
     Timer timer;
     QuickMaff maff = new QuickMaff();
-    final static int SCREEN_HEIGHT = 9000;
+    final static int SCREEN_HEIGHT = 900;
     final static int SCREEN_WIDTH = 900;
     int xConstant=SCREEN_HEIGHT/2;
     int yConstant=SCREEN_WIDTH/2;
