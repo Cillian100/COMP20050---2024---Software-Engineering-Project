@@ -9,11 +9,11 @@ import java.lang.Math;
 class GamePanel extends JPanel implements ActionListener{
     Timer timer;
     QuickMaff maff = new QuickMaff();
-    final static int SCREEN_HEIGHT = 1000;
-    final static int SCREEN_WIDTH = 1000;
+    final static int SCREEN_HEIGHT = 9000;
+    final static int SCREEN_WIDTH = 900;
     int xConstant=SCREEN_HEIGHT/2;
     int yConstant=SCREEN_WIDTH/2;
-    double modifier=0.55;
+    double modifier=maff.getModifier(SCREEN_HEIGHT, SCREEN_WIDTH);
     int x[];
     int y[];
     int counter;
@@ -43,18 +43,18 @@ class GamePanel extends JPanel implements ActionListener{
         double sin = Math.sin(test2);
         int x1 = x+(int)(sin*100*modifier/2);
         int y1 = y+(int)(cos*100*modifier/2);
-        int x2 = x1-(int)(cos*15);
-        int y2 = y1+(int)(sin*15);
+        int x2 = x1-(int)(cos*30*modifier);
+        int y2 = y1+(int)(sin*30*modifier);
 
         int[] triX ={
-                x1+(int)(cos*15),
-                x1+(int)(sin*8),
-                x1-(int)(sin*8),
+                x1+(int)(cos*30*modifier),
+                x1+(int)(sin*16*modifier),
+                x1-(int)(sin*16*modifier),
         };
         int[] triY = {
-                y1-(int)(sin*15),
-                y1+(int)(cos*8),
-                y1-(int)(cos*8),
+                y1-(int)(sin*30*modifier),
+                y1+(int)(cos*16*modifier),
+                y1-(int)(cos*16*modifier),
         };
         g.drawLine(x1, y1, x2, y2);
         g.fillPolygon(triX, triY, 3);

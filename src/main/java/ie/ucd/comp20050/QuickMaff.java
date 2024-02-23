@@ -78,4 +78,10 @@ public class QuickMaff{
         }
         return x;
     }
+
+    public double getModifier(int SCREEN_HEIGHT, int SCREEN_WIDTH){
+        double returnValue=SCREEN_HEIGHT/18;
+        returnValue=returnValue/100;
+        return returnValue;
+    }
 }
