@@ -72,10 +72,16 @@ public class QuickMaff{
     public int NumberOfHexagonsY(double modifier, int SCREEN_HEIGHT){
         int x=0;
         int y=SCREEN_HEIGHT/2;
-        while(y>(modifier*150*2)){
+        while(y>(modifier*100*2)){
             y=(int)(y-(modifier*150));
             x++;
         }
         return x;
+    }
+
+    public double getModifier(int SCREEN_HEIGHT, int SCREEN_WIDTH){
+        double returnValue=SCREEN_HEIGHT/18;
+        returnValue=returnValue/100;
+        return returnValue;
     }
 }
