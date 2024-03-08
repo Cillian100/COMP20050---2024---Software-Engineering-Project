@@ -139,7 +139,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
             }
         }
     }
-    
+
+    /**
+     * Method to calculate where atoms should be spawned
+     */ //@TODO Refactor
     private void calculateAtoms(){
         int max = hexagonCounter2;
         for(int a=0;a<5;a++){
@@ -149,6 +152,9 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
         }
     }
 
+    /**
+     * Method to handle collision detection with atoms
+     */ //@TODO Refactor
     private void collisionDetection(){
         int bounce=0;
         for(int a=0;a<5;a++){
@@ -179,7 +185,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
 
         for(int a=0;a<bored2.numberOfPoints;a++){
              if(green==a){
-                g.setColor(Color.red);
+                g.setColor(Color.yellow);
              }
              g.drawLine(arr[a].lineX[0], arr[a].lineY[0], arr[a].lineX[1], arr[a].lineY[1]);
              g.drawString(Integer.toString(a), arr[a].lineX[1], arr[a].lineY[1]);
