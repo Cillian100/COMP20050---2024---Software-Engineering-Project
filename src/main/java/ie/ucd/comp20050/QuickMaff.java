@@ -7,58 +7,7 @@ public class QuickMaff{
     static double b = Math.toRadians(a);
     static double sinSixty=Math.sin(b);
     static double cosSixty=Math.cos(b);
-
-    public int[] xHexagon(int constant, double modifier){
-        int [] x = {
-                constant,                                //1
-                (int) (constant+(sinSixty*100*modifier)),          //2
-                (int) (constant+(sinSixty*100*2*modifier)),        //3
-                (int) (constant+(sinSixty*100*2*modifier)),        //4
-                (int) (constant+(sinSixty*100*modifier)),          //5
-                constant};                               //6
-        return x;
-    }
-
-    public int xHexagonNext(int constant, double modifier, int position){
-        int constantNext=constant;
-        if(position==2){
-            constantNext=(int) (constant+(sinSixty*100*modifier));
-        }else if(position==3){
-            constantNext=(int) (constant+(sinSixty*100*2*modifier));
-        }else if(position==4){
-            constantNext=(int) (constant+(sinSixty*100*2*modifier));
-        }else if(position==5){
-            constantNext=(int) (constant+(sinSixty*100*modifier));
-        }
-        return constantNext;
-    }
-
-    public int yHexagonNext(int constant, double modifier, int position){
-        int constantNext=constant;
-        if(position==2){
-            constantNext=(int)(constant-(cosSixty*100*3*modifier));
-        }else if(position==3){
-            constantNext=constant;
-        }else if(position==4){
-            constantNext=(int) (constant+(cosSixty*100*2*modifier));
-        }else if(position==5){
-            constantNext=(int)(constant+(cosSixty*100*3*modifier));
-        }
-        return constantNext;
-    }
-
-    public int[] yHexagon(int constant, double modifier){
-        int[] y = {
-                (int) (constant-(cosSixty*100*modifier)),         //1
-                (int) (constant-(cosSixty*100*2*modifier)),        //2
-                (int) (constant-(cosSixty*100*modifier)),         //3
-                (int) (constant+(cosSixty*100*modifier)),         //4
-                (int) (constant+(cosSixty*100*2*modifier)),        //5
-                (int) (constant+(cosSixty*100*modifier))};        //6
-
-        return y;
-    }
-
+    
     public int NumberOfHexagonsX(double modifier, int SCREEN_WIDTH){
         int x=0;
         int y=SCREEN_WIDTH;
@@ -83,5 +32,22 @@ public class QuickMaff{
         double returnValue=SCREEN_HEIGHT/18;
         returnValue=returnValue/100;
         return returnValue;
+    }
+
+    public int distanceBetweenTwoPoints(int X1, int Y1, int X2, int Y2){
+        int x1=X1;
+        int y1=Y1;
+        int x2=X2;
+        int y2=Y2;
+        return (int)(Math.sqrt((y2-y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)));
+    }
+
+    public int moduloRange(int dividend, int modulus, int range){
+        int toss = dividend % modulus;
+        if(toss==dividend){
+            return toss;
+        }else{
+            return toss+range;    
+        }
     }
 }

@@ -1,0 +1,38 @@
+package ie.ucd.comp20050;
+
+public class Arrow{
+    int[] x = new int[2];
+    int[] y = new int[2];
+    int[] lineX = new int[2];
+    int[] lineY = new int[2];   
+    int[] triangleX = new int[3];
+    int[] triangeY = new int[3];
+    double modifier=0;
+    double angle;
+    double cos;
+    double sin;
+    double hold;
+    
+    Arrow(int apple, int banana, int cucumber, int durian, double mod){
+        x[0]=apple;
+        x[1]=cucumber;
+        y[0]=banana;
+        y[1]=durian;
+        modifier=mod;
+        calculateAngle();
+        calculateLine();
+    }
+    public void calculateAngle(){
+        angle = Math.toDegrees(Math.atan2(x[1]-x[0], y[1]-y[0]));
+        hold = Math.toRadians(angle);
+        cos = Math.cos(hold);
+        sin = Math.sin(hold);
+    }
+
+    public void calculateLine(){
+        lineX[0]=(x[0]+x[1])/2;
+        lineY[0]=(y[0]+y[1])/2;
+        lineX[1]=lineX[0] + (int)(cos * (20*modifier));
+        lineY[1]=lineY[0] - (int)(sin * (20*modifier));
+    }
+}
