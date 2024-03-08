@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.lang.Math;
 import java.util.Arrays;
 import java.util.Random;
+import ie.ucd.comp20050.entity.Atom;
 
 
 class GamePanel extends JPanel implements ActionListener, KeyListener{
