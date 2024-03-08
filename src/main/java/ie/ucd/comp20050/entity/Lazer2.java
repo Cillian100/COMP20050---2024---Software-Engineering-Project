@@ -1,5 +1,6 @@
-package ie.ucd.comp20050;
+package ie.ucd.comp20050.entity;
 
+// @TODO Java docs, merging with Lazer and Ray
 public class Lazer2{
     int[] x = new int[100];
     int[] y = new int[100];

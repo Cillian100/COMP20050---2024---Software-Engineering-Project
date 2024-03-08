@@ -1,4 +1,6 @@
-package ie.ucd.comp20050;
+package ie.ucd.comp20050.entity;
+
+// @TODO Java docs, merging with Lazer 2 and Ray
 public class Lazer{
     double x;
     double y;
@@ -9,7 +11,7 @@ public class Lazer{
     double cos;
     double sin;
 
-    Lazer(int apple, int banana, int cranberry, int durian) {
+    public Lazer(int apple, int banana, int cranberry, int durian) {
         x=(double)apple;
         y=(double)banana;
         width=cranberry;

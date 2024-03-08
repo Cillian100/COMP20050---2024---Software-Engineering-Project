@@ -2,7 +2,7 @@ package ie.ucd.comp20050;
 
 import java.lang.Math;
 
-public class QuickMaff{
+public class MathUtils {
     static double a=60;
     static double b = Math.toRadians(a);
     static double sinSixty=Math.sin(b);

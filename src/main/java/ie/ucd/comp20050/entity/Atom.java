@@ -27,7 +27,7 @@ public class Atom implements IEntity {
     private int height;
 
     /**
-     * Constructor. Atoms must be initialised with an X and Y position.
+     * Constructor. Atoms must be initialised with an X and Y position, as well as a width and height.
      * @param inputX integer x-position
      * @param inputY integer y-position
      * @param inputWidth integer width
@@ -68,9 +68,7 @@ public class Atom implements IEntity {
         return height;
     }
 
-    /*
-    LEGACY METHODS. Must be refactored with above.
-     */
+    /* LEGACY METHODS. @TODO Must be refactored with above. */
     public int getX() {
         return getPosX();
     }

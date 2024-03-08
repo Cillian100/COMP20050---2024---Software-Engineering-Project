@@ -1,17 +1,29 @@
 package ie.ucd.comp20050;
 
 public class Border {
-    int[] x;
-    int[] y;
-    int numberOfPoints;
+    private int[] x;
+    private int[] y;
+    private int countPoints;
 
-    Border(int[] xray, int[] yellow, int number) {
+    public Border(int[] xray, int[] yellow, int number) {
         x = xray;
         y = yellow;
-        numberOfPoints = number;
+        countPoints = number;
     }
 
-    public Boolean passedBorder() {
+    public int[] getX() {
+        return x;
+    }
+
+    public int[] getY() {
+        return y;
+    }
+
+    public int getCountPoints() {
+        return countPoints;
+    }
+
+    public Boolean passedBorder() { // @TODO Implement detection
         return false;
     }
 

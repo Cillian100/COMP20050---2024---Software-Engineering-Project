@@ -1,17 +1,19 @@
-package ie.ucd.comp20050;
+package ie.ucd.comp20050.drawing;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.Math;
-import java.util.Arrays;
 import java.util.Random;
-import ie.ucd.comp20050.entity.Atom;
+
+import ie.ucd.comp20050.Arrow;
+import ie.ucd.comp20050.Border;
+import ie.ucd.comp20050.MathUtils;
+import ie.ucd.comp20050.entity.*;
 
 
-class GamePanel extends JPanel implements ActionListener, KeyListener{
+public class GamePanel extends JPanel implements ActionListener, KeyListener {
     Timer timer;
-    QuickMaff maff = new QuickMaff();
+    MathUtils maff = new MathUtils();
     Toolkit tk = Toolkit.getDefaultToolkit();
     Dimension screenSize = tk.getScreenSize();
     int SCREEN_HEIGHT;
@@ -36,7 +38,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
     Random random = new Random();
     int lazer2Count =0;
 
-    GamePanel(){
+    public GamePanel(){
         SCREEN_HEIGHT = this.screenSize.height-80;
         SCREEN_WIDTH = this.screenSize.height-80;
         modifier = maff.getModifier(SCREEN_HEIGHT, SCREEN_WIDTH);
@@ -114,11 +116,11 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
                 if(counter==61){
                     counter=37;
                 }
-                x[numberOfPoints]=(int)hex2[counter].x[0+b];
-                y[numberOfPoints]=(int)hex2[counter].y[0+b];
+                x[numberOfPoints]=(int)hex2[counter].getX()[0+b];
+                y[numberOfPoints]=(int)hex2[counter].getY()[0+b];
                 numberOfPoints++;
-                x[numberOfPoints]=(int)hex2[counter].x[(1+b) % 6];
-                y[numberOfPoints]=(int)hex2[counter].y[(1+b) % 6];
+                x[numberOfPoints]=(int)hex2[counter].getX()[(1+b) % 6];
+                y[numberOfPoints]=(int)hex2[counter].getY()[(1+b) % 6];
                 numberOfPoints++;
                 counter++;
             }
@@ -132,11 +134,11 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
 
 
     private void calculateArrows(){
-        for(int a=0;a<bored2.numberOfPoints;a++){
-            if(a!=bored2.numberOfPoints-1){
-                arr[a] = new Arrow((int)bored2.x[a], (int)bored2.y[a], (int)bored2.x[a+1], (int)bored2.y[a+1], modifier);
+        for(int a=0;a<bored2.getCountPoints();a++){
+            if(a!=bored2.getCountPoints()-1){
+                arr[a] = new Arrow((int)bored2.getX()[a], (int)bored2.getY()[a], (int)bored2.getX()[a+1], (int)bored2.getY()[a+1], modifier);
             }else{
-                arr[a] = new Arrow((int)bored2.x[a], (int)bored2.y[a], (int)bored2.x[0], (int)bored2.y[0], modifier);
+                arr[a] = new Arrow((int)bored2.getX()[a], (int)bored2.getY()[a], (int)bored2.getX()[0], (int)bored2.getY()[0], modifier);
             }
         }
     }
@@ -164,12 +166,12 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
                 zip=false;
             }
 
-            if(maff.distanceBetweenTwoPoints((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atcir[a].getX(), (int)atcir[a].getY()) < 100){
+            if(maff.distanceBetweenTwoPoints((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atcir[a].getPosX(), (int)atcir[a].getPosY()) < 100){
                 if(zipzap.getDirection()==180){
-                    if(zipzap.getMidY() >= atcir[a].getY() - 10 && zipzap.getMidY() <= atcir[a].getY() + 10){
-                    }else if(zipzap.getMidY() > atcir[a].getY()){
+                    if(zipzap.getMidY() >= atcir[a].getPosY() - 10 && zipzap.getMidY() <= atcir[a].getPosY() + 10){
+                    }else if(zipzap.getMidY() > atcir[a].getPosY()){
                         bounce=-60;
-                    }else if(zipzap.getMidY() < atcir[a].getY()){
+                    }else if(zipzap.getMidY() < atcir[a].getPosY()){
                         bounce=60;
                     }
                 }
@@ -185,12 +187,12 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
         collisionDetection();
         g.setColor(Color.blue);
 
-        for(int a=0;a<bored2.numberOfPoints;a++){
+        for(int a=0;a<bored2.getCountPoints();a++){
              if(green==a){
                 g.setColor(Color.yellow);
              }
-             g.drawLine(arr[a].lineX[0], arr[a].lineY[0], arr[a].lineX[1], arr[a].lineY[1]);
-             g.drawString(Integer.toString(a), arr[a].lineX[1], arr[a].lineY[1]);
+             g.drawLine(arr[a].getLineX()[0], arr[a].getLineY()[0], arr[a].getLineX()[1], arr[a].getLineY()[1]);
+             g.drawString(Integer.toString(a), arr[a].getLineX()[1], arr[a].getLineY()[1]);
              if(green==a){
                  g.setColor(Color.blue);
              }
@@ -198,7 +200,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
 
         for(int a=0;a<5;a++){
             g.fillOval((int)atoms[a].getX() - atoms[a].getHeight()/2, (int)atoms[a].getY() - atoms[a].getHeight()/2, atoms[a].getHeight(), atoms[a].getWidth());
-            g.drawOval((int)atcir[a].getX() - atcir[a].getHeight()/2, (int)atcir[a].getY() - atcir[a].getHeight()/2, atcir[a].getHeight(), atcir[a].getWidth());
+            g.drawOval((int)atcir[a].getPosX() - atcir[a].getHeight()/2, (int)atcir[a].getPosY() - atcir[a].getHeight()/2, atcir[a].getHeight(), atcir[a].getWidth());
             g.setColor(Color.red);
             g.drawString(Integer.toString(a), (int)atoms[a].getX() - atoms[a].getHeight()/2, (int)atoms[a].getY() - atoms[a].getHeight()/2);
             g.setColor(Color.blue);
@@ -222,7 +224,7 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
             g.drawString(Integer.toString(a), (int)hex2[a].getMiddleX(), (int)hex2[a].getMiddleY());
         }
         g.setColor(Color.RED);
-        g.drawPolygon(bored2.x, bored2.y, bored2.numberOfPoints);
+        g.drawPolygon(bored2.getX(), bored2.getY(), bored2.getCountPoints());
 
     }
 
@@ -233,34 +235,48 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
             zipzap.move();
         }
     }
+
+    /**
+     * Handles user input for moving pointer position.
+     * User can use 'A' or 'Left arrow' to move counter-clockwise around grid.
+     * User can use 'D' or 'Right arrow' to move clockwise around grid.
+     * User position wraps around at indexes 0 and 53.
+     * @param event event to be processed
+     */
     @Override
-    public void keyPressed(KeyEvent e){
-    }
-    @Override
-    public void keyReleased(KeyEvent e){
-        char keyChar = e.getKeyChar();
-        if(keyChar=='w'){
-            System.out.println(keyChar);
-            zipzap.set(arr[green].lineX[0], arr[green].lineY[0], arr[green].angle);
-            //zipzoop[lazer2Count].set((int)arr[green].lineX[0], (int)arr[green].lineY[0]);
-            zip=true;
-            lazer2Count++;
-            System.out.println(lazer2Count);
+    public void keyPressed(KeyEvent event){
+        /* Ensures user pressed a movement key */
+        switch(event.getKeyCode()) {
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> green--;
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> green++;
         }
 
+        /* Resets pointer position if it moves out of bounds */
+        if(green < 0) green = 53;
+        else if(green > 53) green = 0;
     }
+
+    /**
+     * Handles user input for ray spawning.
+     * User can use 'W' or 'Space' to spawn a ray at his current pointer position.
+     * @param event event to be processed
+     */
     @Override
-    public void keyTyped(KeyEvent e){
-        char keyChar = e.getKeyChar();
-        if(keyChar=='a'){
-            green--;
+    public void keyReleased(KeyEvent event){
+        /* Ensures user pressed W or space */
+        switch(event.getKeyCode()) {
+            case KeyEvent.VK_W, KeyEvent.VK_SPACE -> System.out.println("Ray Spawned");
+            default -> { return; }
         }
-        if(keyChar=='d'){
-            green++;
-        }
-        green=green%54;
-        if (green < 0) {
-            green += 54;
-        }
+
+        /* Spawns ray */
+        zipzap.set(arr[green].getLineX()[0], arr[green].getLineY()[0], arr[green].getAngle());
+        zip = true;
+        lazer2Count++;
+        System.out.println("lazer2Count: " + lazer2Count);
     }
+
+    @Override
+    public void keyTyped(KeyEvent e){ }
+
 }

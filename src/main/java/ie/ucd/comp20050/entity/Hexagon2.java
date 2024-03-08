@@ -1,20 +1,20 @@
-package ie.ucd.comp20050;
+package ie.ucd.comp20050.entity;
 
 public class Hexagon2{
-    static double a=60;
-    static double b = Math.toRadians(a);
-    static double sinSixty=Math.sin(b);
-    static double cosSixty=Math.cos(b);
-    int numberOfPoints=1;
-    double x2[] = new double[10];
-    double x[] = new double[10];
-    int xInt[] = new int[10];
-    double y2[] = new double[10];
-    double y[] = new double[10];
-    int yInt[] = new int[10];
-    double modifier;
+    private double a=60;
+    private double b = Math.toRadians(a);
+    private double sinSixty=Math.sin(b);
+    private double cosSixty=Math.cos(b);
+    private int numberOfPoints=1;
+    private double x2[] = new double[10];
+    private double x[] = new double[10];
+    private int xInt[] = new int[10];
+    private double y2[] = new double[10];
+    private double y[] = new double[10];
+    private int yInt[] = new int[10];
+    private double modifier;
 
-    Hexagon2(double apple, double banana, double cranberry, int calibrate){
+    public Hexagon2(double apple, double banana, double cranberry, int calibrate){
         x2[0]=apple;
         y2[0]=banana;
         modifier=cranberry;
@@ -37,6 +37,8 @@ public class Hexagon2{
         }
     }
 
+    /* LEGACY METHODS. @TODO Must be refactored with above. */
+
     public void xHexagon(){
         x[1] = (x[0]+(sinSixty*100*modifier));
         x[2] = (x[0]+(sinSixty*100*2*modifier));
@@ -52,10 +54,12 @@ public class Hexagon2{
         y[4] = (y[0]+(100*modifier))+(cosSixty*100*modifier);
         y[5] = (y[0]+(100*modifier));
     }
-    double[] getX(){
+
+    public double[] getX(){
         return x;
     }
-    int[] getXInteger(){
+
+    public int[] getXInteger(){
         xInt[0]=(int)x[0];
         xInt[1]=(int)x[1];
         xInt[2]=(int)x[2];
@@ -64,7 +68,8 @@ public class Hexagon2{
         xInt[5]=(int)x[5];
         return xInt;
     }
-    int[] getYInteger(){
+
+    public int[] getYInteger(){
         yInt[0]=(int)y[0];
         yInt[1]=(int)y[1];
         yInt[2]=(int)y[2];
@@ -73,18 +78,23 @@ public class Hexagon2{
         yInt[5]=(int)y[5];
         return yInt;
 
-    }    
-    double[] getY(){
+    }
+
+    public double[] getY(){
         return y;
     }
-    int getNumberOfPoints(){
+
+    public int getNumberOfPoints(){
         return numberOfPoints;
     }
-    double getMiddleX(){
+
+    public double getMiddleX(){
         return (x[1] + x[4])/2; 
     }
-    double getMiddleY(){
+
+    public double getMiddleY(){
         return (y[1] + y[4])/2;
 
     }
+
 }
