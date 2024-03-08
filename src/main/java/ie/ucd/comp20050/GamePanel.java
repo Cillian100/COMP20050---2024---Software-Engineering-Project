@@ -146,9 +146,10 @@ class GamePanel extends JPanel implements ActionListener, KeyListener{
     private void calculateAtoms(){
         int max = hexagonCounter2;
         for(int a=0;a<5;a++){
-            int randomRandom = random.nextInt(max); 
-            atoms[a] = new Atom((int)hex2[randomRandom].getMiddleX(), (int)hex2[randomRandom].getMiddleY(), 94, 94);                  //HARD CODING
-            atcir[a] = new AtomCircle((int)hex2[randomRandom].getMiddleX(), (int)hex2[randomRandom].getMiddleY(), (int)(94*2), (int)(94*2));
+            int randomRandom = random.nextInt(max);
+            int sizing = (int)(175 * modifier);
+            atoms[a] = new Atom((int)hex2[randomRandom].getMiddleX(), (int)hex2[randomRandom].getMiddleY(), sizing, sizing);                  //HARD CODING
+            atcir[a] = new AtomCircle((int)hex2[randomRandom].getMiddleX(), (int)hex2[randomRandom].getMiddleY(), sizing*2, sizing*2);
         }
     }
 
