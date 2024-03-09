@@ -8,11 +8,6 @@ public class MathTest {
 
     @Test
     void testDistanceFormula() {
-        int x1 = 5;
-        int y1 = 5;
-        int x2 = 10;
-        int y2 = 10;
-
         assertEquals(7, MathUtils.pointsDistance(5, 5, 10, 10));
         assertEquals(35, MathUtils.pointsDistance(13, 47, 28, 15));
     }
