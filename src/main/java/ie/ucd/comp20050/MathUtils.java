@@ -28,18 +28,10 @@ public class MathUtils {
         return x;
     }
 
-    public double getModifier(int SCREEN_HEIGHT, int SCREEN_WIDTH){
+    public double getModifier(int SCREEN_HEIGHT, int SCREEN_WIDTH) {
         double returnValue=SCREEN_HEIGHT/18;
         returnValue=returnValue/100;
         return returnValue;
-    }
-
-    public int distanceBetweenTwoPoints(int X1, int Y1, int X2, int Y2){
-        int x1=X1;
-        int y1=Y1;
-        int x2=X2;
-        int y2=Y2;
-        return (int)(Math.sqrt((y2-y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)));
     }
 
     public int moduloRange(int dividend, int modulus, int range){

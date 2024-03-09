@@ -68,6 +68,14 @@ public class Atom implements IEntity {
         return height;
     }
 
+    public void setWidth(int value) {
+        width = value;
+    }
+
+    public void setHeight(int value) {
+        height = value;
+    }
+
     /* LEGACY METHODS. @TODO Must be refactored with above. */
     public int getX() {
         return getPosX();

@@ -8,6 +8,8 @@ public class Main {
 
         // gameWindow will eventually be used to manipulate the elements being drawn
         GameWindow gameWindow = new GameWindow("BlackBox", false);
+        // Start game clock
+        gameWindow.startGame();
 
     }
 

@@ -10,17 +10,12 @@ import ie.ucd.comp20050.Border;
 import ie.ucd.comp20050.MathUtils;
 import ie.ucd.comp20050.entity.*;
 
+import static ie.ucd.comp20050.Common.pointsDistance;
 
-public class GamePanel extends JPanel implements ActionListener, KeyListener {
+
+public class GamePanel extends JPanel implements KeyListener {
     Timer timer;
     MathUtils maff = new MathUtils();
-    Toolkit tk = Toolkit.getDefaultToolkit();
-    Dimension screenSize = tk.getScreenSize();
-    int SCREEN_HEIGHT;
-    int SCREEN_WIDTH;
-    int xConstant=SCREEN_HEIGHT/2;
-    int yConstant=SCREEN_WIDTH/2;
-    double modifier;
     int x[];
     int y[];
     int counter;
@@ -38,11 +33,17 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     Random random = new Random();
     int lazer2Count =0;
 
-    public GamePanel(){
-        SCREEN_HEIGHT = this.screenSize.height-80;
-        SCREEN_WIDTH = this.screenSize.height-80;
-        modifier = maff.getModifier(SCREEN_HEIGHT, SCREEN_WIDTH);
-        this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
+    /* LEGACY VARS */
+    double modifier;
+    int SCREEN_HEIGHT;
+    int SCREEN_WIDTH;
+    int xConstant=SCREEN_HEIGHT/2;
+    int yConstant=SCREEN_WIDTH/2;
+
+    public GamePanel(Dimension windowSizeInput, double windowModifierInput){
+        SCREEN_HEIGHT = (int) windowSizeInput.getHeight();
+        SCREEN_WIDTH = (int) windowSizeInput.getHeight();
+        modifier = windowModifierInput;
         this.setBackground(Color.black);
         this.setFocusable(true);
         this.addKeyListener(this);
@@ -53,13 +54,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         calculateBorderInADifferentWay();
         calculateArrows();
         calculateAtoms();
-        startGame();
+        //startGame();
     }
 
-    public void startGame(){
-        timer = new Timer(50, this);
-        timer.start();
-    }
+//    /**
+//     * Synchronous game clock. Redraws board every 50 ms
+//     */
+//    public void startGame(){
+//        timer = new Timer(50, this);
+//        timer.start();
+//    }
 
     @Override
     public void paintComponent(Graphics g){
@@ -162,11 +166,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private void collisionDetection(){
         int bounce=0;
         for(int a=0;a<5;a++){
-            if(maff.distanceBetweenTwoPoints((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atoms[a].getX(), (int)atoms[a].getY()) < 50){    //HARD CODING
+            if(pointsDistance((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atoms[a].getX(), (int)atoms[a].getY()) < 50){    //HARD CODING
                 zip=false;
             }
 
-            if(maff.distanceBetweenTwoPoints((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atcir[a].getPosX(), (int)atcir[a].getPosY()) < 100){
+            if(pointsDistance((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atcir[a].getPosX(), (int)atcir[a].getPosY()) < 100){
                 if(zipzap.getDirection()==180){
                     if(zipzap.getMidY() >= atcir[a].getPosY() - 10 && zipzap.getMidY() <= atcir[a].getPosY() + 10){
                     }else if(zipzap.getMidY() > atcir[a].getPosY()){
@@ -228,13 +232,13 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     }
 
-    @Override
-    public void actionPerformed(ActionEvent e){
-        repaint();
-        if(zip==true){
-            zipzap.move();
-        }
-    }
+//    @Override
+//    public void actionPerformed(ActionEvent e){
+//        repaint();
+//        if(zip==true){
+//            zipzap.move();
+//        }
+//    }
 
     /**
      * Handles user input for moving pointer position.
