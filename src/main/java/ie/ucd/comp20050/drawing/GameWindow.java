@@ -1,11 +1,12 @@
 package ie.ucd.comp20050.drawing;
 
+import ie.ucd.comp20050.entity.Atom;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.util.ArrayList;
 
 import static ie.ucd.comp20050.MathUtils.calculateWindowModifier;
 
@@ -34,6 +35,12 @@ public class GameWindow extends JFrame implements ActionListener {
      */
     private final Dimension WINDOW_SIZE = new Dimension(WINDOW_HEIGHT, WINDOW_HEIGHT);
 
+    /**
+     * ArrayList storage for Atoms.
+     * Set with {@link #setAtoms(ArrayList)}
+     */
+    private ArrayList<Atom> atoms;
+
     GamePanel panel = new GamePanel(WINDOW_SIZE, WINDOW_MODIFIER); // Temporary, for interacting with the GamePanel
 
     /**
@@ -55,7 +62,7 @@ public class GameWindow extends JFrame implements ActionListener {
      * May become unnecessary and deprecated in a future version.
      * {@link #actionPerformed(ActionEvent)}
      */
-    public void startGame(){ // May need to become async if non-blockable functionality added. @TODO Revisit startGame
+    public void startGame() { // May need to become async if non-blockable functionality added. @TODO Revisit startGame
         new Timer(50, this).start();
     }
 
@@ -65,9 +72,18 @@ public class GameWindow extends JFrame implements ActionListener {
      * {@link #startGame()} triggers this method.
      */
     @Override
-    public void actionPerformed(ActionEvent event) {
+    public void actionPerformed(ActionEvent event) { //@TODO encapsulate 'zip' and 'zipzap'
         panel.repaint();
         if(panel.zip) panel.zipzap.move();
+    }
+
+    /**
+     * Replaces the Atom list used for drawing
+     * @param input ArrayList<Atom>, list of Atoms to draw
+     */
+    public void setAtoms(ArrayList<Atom> input) { // These are generated in Main!!
+        atoms = input;
+        panel.setAtoms(atoms);
     }
 
 }

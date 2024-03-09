@@ -15,7 +15,6 @@ import static ie.ucd.comp20050.MathUtils.pointsDistance;
 
 
 public class GamePanel extends JPanel implements KeyListener {
-    Timer timer;
     int x[];
     int y[];
     int counter;
@@ -43,7 +42,12 @@ public class GamePanel extends JPanel implements KeyListener {
     /**
      * ArrayList storage for Atoms in the game.
      */
-    ArrayList<Atom> atomlist = new ArrayList<Atom>();
+    private ArrayList<Atom> atoms;
+
+    /**
+     * Graphics tool. Set by paintComponent, allows methods to be called without issue from other classes.
+     */
+    Graphics graph;
 
     public GamePanel(Dimension windowSizeInput, double windowModifierInput){
         SCREEN_HEIGHT = (int) windowSizeInput.getHeight();
@@ -58,15 +62,32 @@ public class GamePanel extends JPanel implements KeyListener {
         calculateGridInADifferentWay();
         calculateBorderInADifferentWay();
         calculateArrows();
-        atomlist = atomsGenerate(5, hexagonCounter2, modifier); // Gen atoms. Should be moved outside GamePanel
+    }
+
+    /**
+     * Adds Atoms; atoms are not generated here.
+     * This is a temporary method, and will be removed once GamePanel is merged into GameWindow.
+     * @param input ArrayList<Atom>, list of Atoms to be drawn
+     */
+    public void setAtoms(ArrayList<Atom> input) {
+        atoms = input;
     }
 
     @Override
-    public void paintComponent(Graphics g){
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        drawBackground(g);
+        graph = g; // Updates stored Graphics
+        drawBackground(atoms);
     }
 
+    /*
+    Generates the grid, and creates the count of hexagons.
+    @TODO Refactor. 'Grid making' should be moved to main, switching an array for ArrayList. Eliminate hexcounter.
+
+    Steven: This seems to always make 61 hexagons on my desktop, haven't yet tested on mac;
+    is there ever a realistic scenario where this should be dynamic?
+    Monopoly is always the same board size, I would imagine this game is much the same (I don't know it that well).
+     */
     private void calculateGridInADifferentWay(){
         yConstant=(int)(SCREEN_WIDTH/2 - 50 * modifier);
         xConstant=(int)(SCREEN_WIDTH/2 - 87 * modifier);
@@ -144,72 +165,62 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     /**
-     * Generates Atoms to be placed on the board
-     * @param count integer, amount of Atoms to be generated
-     * @param hexagons integer, count of hexagons on the board
-     * @param modifier double, dynamic adjustment for atoms
-     * @return ArrayList<Atom>, new list of generated AToms
+     * Draws Atoms on the game board
+     * @param list ArrayList<Atom>, input list of Atoms to draw
      */
-    private ArrayList<Atom> atomsGenerate(int count, int hexagons, double modifier) {
-        ArrayList<Atom> list = new ArrayList<Atom>();
-        for(int i = 0; i < count; i++) {
-            int r = random.nextInt(hexagons);
+    private void drawAtoms(ArrayList<Atom> list) {
+        for(Atom atom : list) {
+            int posX = (int) hex2[atom.getHexagon()].getMiddleX();
+            int posY = (int) hex2[atom.getHexagon()].getMiddleY();
             int size = (int) (175 * modifier);
-            int x = (int) hex2[r].getMiddleX();
-            int y = (int) hex2[r].getMiddleY();
-            list.add(new Atom(x, y, size, size));
+
+            graph.fillOval(posX - size/2, posY - size/2, size, size);
+            graph.drawOval(posX - size, posY - size, size*2, size*2);
+            graph.setColor(Color.red);
+            graph.setColor(Color.blue);
         }
-        return list;
     }
 
     /**
      * Method to handle collision detection with atoms
      */ //@TODO Refactor. Collision detection should probably be moved into Ray entity, or otherwise a separate class
-    private void collisionDetection(){
+    private void collisionDetection(ArrayList<Atom> list){
         int bounce=0;
 
-        for(Atom atom : atomlist) {
-            if(pointsDistance((int)zipzap.getMidX(), (int)zipzap.getMidY(), atom.getPosX(), atom.getPosY()) < 50)
-                zip=false;
+        for(Atom atom : list) {
+            int posX = (int) hex2[atom.getHexagon()].getMiddleX();
+            int posY = (int) hex2[atom.getHexagon()].getMiddleY();
+            int dist = pointsDistance((int) zipzap.getMidX(), (int) zipzap.getMidY(), posX, posY);
 
-            if(pointsDistance((int) zipzap.getMidX(), (int) zipzap.getMidY(), atom.getPosX(), atom.getPosY()) < 100) {
-                if(zipzap.getDirection() == 180) {
-                    if( (zipzap.getMidY() >= atom.getPosY() - 10) && (zipzap.getMidY() <= atom.getPosY() + 10) ) {
-                        // does nothing?
-                    }
-                    else if (zipzap.getMidY() > atom.getPosY()) bounce = -60;
-                    else if (zipzap.getMidY() < atom.getPosY()) bounce = 60;
-                }
-                zipzap.changeDirection(zipzap.getDirection() + bounce);
+            if(dist < 50) zip = false;
+            if(dist < 100) {
+                if(zipzap.getDirection() == 180); // does nothing?
+                else if(zipzap.getMidY() > posY) bounce = -60;
+                else if(zipzap.getMidY() < posY) bounce = 60;
             }
+            zipzap.changeDirection(zipzap.getDirection() + bounce);
         }
     }
 
-    private void drawBackground(Graphics g){
-        collisionDetection();
-        g.setColor(Color.blue);
+    private void drawBackground(ArrayList<Atom> atoms){
+        collisionDetection(atoms);
+        graph.setColor(Color.blue);
 
         for(int a=0;a<bored2.getCountPoints();a++){
              if(posPointer == a){
-                g.setColor(Color.yellow);
+                graph.setColor(Color.yellow);
              }
-             g.drawLine(arr[a].getLineX()[0], arr[a].getLineY()[0], arr[a].getLineX()[1], arr[a].getLineY()[1]);
-             g.drawString(Integer.toString(a), arr[a].getLineX()[1], arr[a].getLineY()[1]);
+             graph.drawLine(arr[a].getLineX()[0], arr[a].getLineY()[0], arr[a].getLineX()[1], arr[a].getLineY()[1]);
+             graph.drawString(Integer.toString(a), arr[a].getLineX()[1], arr[a].getLineY()[1]);
              if(posPointer ==a){
-                 g.setColor(Color.blue);
+                 graph.setColor(Color.blue);
              }
          }
 
-        for(int a=0;a<5;a++){
-            Atom atom = atomlist.get(a);
-            g.fillOval(atom.getPosX() - atom.getHeight()/2, atom.getPosY() - atom.getHeight()/2, atom.getHeight(), atom.getWidth());
-            g.drawString(Integer.toString(a), atom.getPosX() - atom.getHeight()/2, atom.getPosY() - atom.getHeight()/2);
-            g.drawOval(atom.getPosX() - atom.getHeight(), atom.getPosY() - atom.getHeight(), atom.getCircleHeight(), atom.getCircleWidth());
-            g.setColor(Color.red);
-            g.setColor(Color.blue);
-        }
-        g.drawOval((int)zipzap.getMidX()-5, (int)zipzap.getMidY()-5, 10, 10);
-        g.setColor(Color.red);
+        drawAtoms(atoms);
+
+        graph.drawOval((int)zipzap.getMidX()-5, (int)zipzap.getMidY()-5, 10, 10);
+        graph.setColor(Color.red);
         
         //for(int a=0;a<lazer2Count;a++){
         //    if(zipzoop[a].x[0]!=0 && zipzoop[a].x[1]!=0){
@@ -218,16 +229,16 @@ public class GamePanel extends JPanel implements KeyListener {
         //    }
         //}
 
-        g.drawString("Player 1: Press a and d to move. Press and release w to shoot.", 25, 25);
-        g.drawString("Number of lazers left:" + Integer.toString(10-lazer2Count), 25, 50);
+        graph.drawString("Player 1: Press a and d to move. Press and release w to shoot.", 25, 25);
+        graph.drawString("Number of lazers left:" + Integer.toString(10-lazer2Count), 25, 50);
         
-        g.setColor(Color.pink);
+        graph.setColor(Color.pink);
         for(int a=0;a<hexagonCounter2;a++){
-            g.drawPolygon(hex2[a].getXInteger(), hex2[a].getYInteger(), hex2[a].getNumberOfPoints());
-            g.drawString(Integer.toString(a), (int)hex2[a].getMiddleX(), (int)hex2[a].getMiddleY());
+            graph.drawPolygon(hex2[a].getXInteger(), hex2[a].getYInteger(), hex2[a].getNumberOfPoints());
+            graph.drawString(Integer.toString(a), (int)hex2[a].getMiddleX(), (int)hex2[a].getMiddleY());
         }
-        g.setColor(Color.RED);
-        g.drawPolygon(bored2.getX(), bored2.getY(), bored2.getCountPoints());
+        graph.setColor(Color.RED);
+        graph.drawPolygon(bored2.getX(), bored2.getY(), bored2.getCountPoints());
 
     }
 

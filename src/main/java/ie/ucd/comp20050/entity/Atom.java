@@ -1,95 +1,43 @@
 package ie.ucd.comp20050.entity;
 
-/**
- * Atom entity. Implements IEntity
- * @see ie.ucd.comp20050.entity.IEntity
+/*
+This is the new Atom class, which can be used for abstraction.
+Everywhere the Atom's "real" position (X, Y) is needed (e.g., drawing), position can be obtained from the hexagon
+Detection should be abstracted to compound based on index; it is likely that this class will need to be
+expanded to support good detections.
  */
-public class Atom implements IEntity {
+/**
+ * Atom entity.
+ */
+public class Atom {
 
     /**
-     * X-position of the Atom
+     * Index of hexagon where Atom is located.
      */
-    private int posX;
+    private int hexagon;
 
     /**
-     * Y-position of the Atom
+     * Constructor.
+     * @param hexagonInput integer, index of Atom's hexagon
      */
-    private int posY;
+    public Atom(int hexagonInput) {
+        hexagon = hexagonInput;
+    }
 
     /**
-     * Width of the Atom
+     * Retrieve the index of the Atom's hexagon
+     * @return integer, hexagon index
      */
-    private int width;
+    public int getHexagon() {
+        return hexagon;
+    }
 
     /**
-     * Height of the Atom
+     * Set the index of the Atom's hexagon
+     * @param value integer, new hexagon index
      */
-    private int height;
-
-    /**
-     * Constructor. Atoms must be initialised with an X and Y position, as well as a width and height.
-     * @param inputX integer x-position
-     * @param inputY integer y-position
-     * @param inputWidth integer width
-     * @param inputHeight integer height
-     */
-    public Atom(int inputX, int inputY, int inputWidth, int inputHeight) {
-        posX = inputX;
-        posY = inputY;
-        width = inputWidth;
-        height = inputHeight;
-    }
-
-    @Override
-    public int getPosX() {
-        return posX;
-    }
-
-    @Override
-    public int getPosY() {
-        return posY;
-    }
-
-    @Override
-    public void setPosX(int value) {
-        posX = value;
-    }
-
-    @Override
-    public void setPosY(int value) {
-        posY = value;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setWidth(int value) {
-        width = value;
-    }
-
-    public void setHeight(int value) {
-        height = value;
-    }
-
-    public int getCircleWidth() {
-        return width * 2;
-    }
-
-    public int getCircleHeight() {
-        return height * 2;
-    }
-
-    public int getMiddleX() {
-        return posX + width;
-    }
-
-    public int getMiddleY() {
-        return posY + height;
+    public void setHexagon(int value) {
+        hexagon = value;
     }
 
 }
