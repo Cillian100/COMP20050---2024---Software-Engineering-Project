@@ -7,15 +7,14 @@ import java.util.Random;
 
 import ie.ucd.comp20050.Arrow;
 import ie.ucd.comp20050.Border;
-import ie.ucd.comp20050.MathUtils;
+import ie.ucd.comp20050.Hexagon2;
 import ie.ucd.comp20050.entity.*;
 
-import static ie.ucd.comp20050.Common.pointsDistance;
+import static ie.ucd.comp20050.MathUtils.pointsDistance;
 
 
 public class GamePanel extends JPanel implements KeyListener {
     Timer timer;
-    MathUtils maff = new MathUtils();
     int x[];
     int y[];
     int counter;

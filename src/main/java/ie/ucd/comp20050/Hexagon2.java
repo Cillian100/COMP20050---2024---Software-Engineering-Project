@@ -1,6 +1,6 @@
-package ie.ucd.comp20050.entity;
+package ie.ucd.comp20050;
 
-public class Hexagon2{
+public class Hexagon2 {
     private double a=60;
     private double b = Math.toRadians(a);
     private double sinSixty=Math.sin(b);

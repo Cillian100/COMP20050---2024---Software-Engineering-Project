@@ -1,45 +1,46 @@
 package ie.ucd.comp20050;
 
-import java.lang.Math;
+/**
+ * Common math utilities.
+ */
+public final class MathUtils {
 
-public class MathUtils {
-    static double a=60;
-    static double b = Math.toRadians(a);
-    static double sinSixty=Math.sin(b);
-    static double cosSixty=Math.cos(b);
-    
-    public int NumberOfHexagonsX(double modifier, int SCREEN_WIDTH){
-        int x=0;
-        int y=SCREEN_WIDTH;
-        while(y>(modifier*sinSixty*100*4)){
-            y=(int) (y-(modifier*sinSixty*100*2));
-            x++;
-        }
-        return x;
+    /**
+     * Calculates the distance between two points.
+     * @param x1 X-position of point 1
+     * @param y1 Y-position of point 1
+     * @param x2 X-position of point 2
+     * @param y2 Y-position of point 2
+     * @return integer, rough distance between the points
+     */
+    public static int pointsDistance(int x1, int y1, int x2, int y2) {
+        return (int) Math.hypot(x1-x2, y1-y2);
     }
 
-    public int NumberOfHexagonsY(double modifier, int SCREEN_HEIGHT){
-        int x=0;
-        int y=SCREEN_HEIGHT/2;
-        while(y>(modifier*100*2)){
-            y=(int)(y-(modifier*150));
-            x++;
-        }
-        return x;
+    /**
+     * Calculates the window modifier, which adjusts element sizing for screen resolution.
+     * @implNote Only creates modifier for a 'square' window.
+     * @param height integer, window height size
+     * @return double, modifier for window elements
+     */
+    public static double calculateWindowModifier(int height) {
+        return ((double)height / 18) / 100;
     }
 
-    public double getModifier(int SCREEN_HEIGHT, int SCREEN_WIDTH) {
-        double returnValue=SCREEN_HEIGHT/18;
-        returnValue=returnValue/100;
-        return returnValue;
+    /*
+    Steven: I don't understand what the use for this method is.
+    Modulo operator returns original input if modulo is higher than input. Eg., 21 % 100 = 21.
+    Only difference this does from modulo is that, if mod is not equal to or higher than div, it adds range.
+     */
+    /**
+     * Unknown function.
+     * @param dividend integer, number to perform modulus on
+     * @param modulus integer, modulus number
+     * @param range integer, unknown use
+     * @return mod result + range if dividend < modulus; else, dividend.
+     */
+    public static int calculateModuloRange(int dividend, int modulus, int range) {
+        return modulus >= dividend ? dividend : (dividend % modulus) + range;
     }
 
-    public int moduloRange(int dividend, int modulus, int range){
-        int toss = dividend % modulus;
-        if(toss==dividend){
-            return toss;
-        }else{
-            return toss+range;    
-        }
-    }
 }
