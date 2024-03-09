@@ -3,6 +3,7 @@ package ie.ucd.comp20050.drawing;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 import ie.ucd.comp20050.Arrow;
@@ -20,14 +21,12 @@ public class GamePanel extends JPanel implements KeyListener {
     int counter;
     Hexagon2[] hex2 = new Hexagon2[100];
     Arrow[] arr = new Arrow[100];
-    Atom[] atoms = new Atom[100];
-    AtomCircle[] atcir = new AtomCircle[100];
     Lazer zipzap = new Lazer(-10, -10, 0, 0);
     Lazer2[] zipzoop = new Lazer2[10];
     Border bored;
     Border bored2;
     int hexagonCounter=0, hexagonCounter2=0;
-    int green=0;
+    int posPointer = 0;
     boolean zip=false;
     Random random = new Random();
     int lazer2Count =0;
@@ -38,6 +37,13 @@ public class GamePanel extends JPanel implements KeyListener {
     int SCREEN_WIDTH;
     int xConstant=SCREEN_HEIGHT/2;
     int yConstant=SCREEN_WIDTH/2;
+
+    /* UPDATED VARS */
+
+    /**
+     * ArrayList storage for Atoms in the game.
+     */
+    ArrayList<Atom> atomlist = new ArrayList<Atom>();
 
     public GamePanel(Dimension windowSizeInput, double windowModifierInput){
         SCREEN_HEIGHT = (int) windowSizeInput.getHeight();
@@ -52,17 +58,8 @@ public class GamePanel extends JPanel implements KeyListener {
         calculateGridInADifferentWay();
         calculateBorderInADifferentWay();
         calculateArrows();
-        calculateAtoms();
-        //startGame();
+        atomlist = atomsGenerate(5, hexagonCounter2, modifier); // Gen atoms. Should be moved outside GamePanel
     }
-
-//    /**
-//     * Synchronous game clock. Redraws board every 50 ms
-//     */
-//    public void startGame(){
-//        timer = new Timer(50, this);
-//        timer.start();
-//    }
 
     @Override
     public void paintComponent(Graphics g){
@@ -147,41 +144,43 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     /**
-     * Method to calculate where atoms should be spawned
-     */ //@TODO Refactor
-    private void calculateAtoms(){
-        int max = hexagonCounter2;
-        for(int a=0;a<5;a++){
-            int randomRandom = random.nextInt(max);
-            int sizing = (int)(175 * modifier);
-            atoms[a] = new Atom((int)hex2[randomRandom].getMiddleX(), (int)hex2[randomRandom].getMiddleY(), sizing, sizing);                  //HARD CODING
-            atcir[a] = new AtomCircle((int)hex2[randomRandom].getMiddleX(), (int)hex2[randomRandom].getMiddleY(), sizing*2, sizing*2);
+     * Generates Atoms to be placed on the board
+     * @param count integer, amount of Atoms to be generated
+     * @param hexagons integer, count of hexagons on the board
+     * @param modifier double, dynamic adjustment for atoms
+     * @return ArrayList<Atom>, new list of generated AToms
+     */
+    private ArrayList<Atom> atomsGenerate(int count, int hexagons, double modifier) {
+        ArrayList<Atom> list = new ArrayList<Atom>();
+        for(int i = 0; i < count; i++) {
+            int r = random.nextInt(hexagons);
+            int size = (int) (175 * modifier);
+            int x = (int) hex2[r].getMiddleX();
+            int y = (int) hex2[r].getMiddleY();
+            list.add(new Atom(x, y, size, size));
         }
+        return list;
     }
 
     /**
      * Method to handle collision detection with atoms
-     */ //@TODO Refactor
+     */ //@TODO Refactor. Collision detection should probably be moved into Ray entity, or otherwise a separate class
     private void collisionDetection(){
         int bounce=0;
-        for(int a=0;a<5;a++){
-            if(pointsDistance((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atoms[a].getX(), (int)atoms[a].getY()) < 50){    //HARD CODING
-                zip=false;
-            }
 
-            if(pointsDistance((int)zipzap.getMidX(), (int)zipzap.getMidY(), (int)atcir[a].getPosX(), (int)atcir[a].getPosY()) < 100){
-                if(zipzap.getDirection()==180){
-                    if(zipzap.getMidY() >= atcir[a].getPosY() - 10 && zipzap.getMidY() <= atcir[a].getPosY() + 10){
-                    }else if(zipzap.getMidY() > atcir[a].getPosY()){
-                        bounce=-60;
-                    }else if(zipzap.getMidY() < atcir[a].getPosY()){
-                        bounce=60;
+        for(Atom atom : atomlist) {
+            if(pointsDistance((int)zipzap.getMidX(), (int)zipzap.getMidY(), atom.getPosX(), atom.getPosY()) < 50)
+                zip=false;
+
+            if(pointsDistance((int) zipzap.getMidX(), (int) zipzap.getMidY(), atom.getPosX(), atom.getPosY()) < 100) {
+                if(zipzap.getDirection() == 180) {
+                    if( (zipzap.getMidY() >= atom.getPosY() - 10) && (zipzap.getMidY() <= atom.getPosY() + 10) ) {
+                        // does nothing?
                     }
+                    else if (zipzap.getMidY() > atom.getPosY()) bounce = -60;
+                    else if (zipzap.getMidY() < atom.getPosY()) bounce = 60;
                 }
                 zipzap.changeDirection(zipzap.getDirection() + bounce);
-                //LAZER 2 enable
-                //zipzoop[lazer2Count-1].set((int)zipzap.getMidX(), (int)zipzap.getMidY());
-                //zip=false;
             }
         }
     }
@@ -191,21 +190,22 @@ public class GamePanel extends JPanel implements KeyListener {
         g.setColor(Color.blue);
 
         for(int a=0;a<bored2.getCountPoints();a++){
-             if(green==a){
+             if(posPointer == a){
                 g.setColor(Color.yellow);
              }
              g.drawLine(arr[a].getLineX()[0], arr[a].getLineY()[0], arr[a].getLineX()[1], arr[a].getLineY()[1]);
              g.drawString(Integer.toString(a), arr[a].getLineX()[1], arr[a].getLineY()[1]);
-             if(green==a){
+             if(posPointer ==a){
                  g.setColor(Color.blue);
              }
          }
 
         for(int a=0;a<5;a++){
-            g.fillOval((int)atoms[a].getX() - atoms[a].getHeight()/2, (int)atoms[a].getY() - atoms[a].getHeight()/2, atoms[a].getHeight(), atoms[a].getWidth());
-            g.drawOval((int)atcir[a].getPosX() - atcir[a].getHeight()/2, (int)atcir[a].getPosY() - atcir[a].getHeight()/2, atcir[a].getHeight(), atcir[a].getWidth());
+            Atom atom = atomlist.get(a);
+            g.fillOval(atom.getPosX() - atom.getHeight()/2, atom.getPosY() - atom.getHeight()/2, atom.getHeight(), atom.getWidth());
+            g.drawString(Integer.toString(a), atom.getPosX() - atom.getHeight()/2, atom.getPosY() - atom.getHeight()/2);
+            g.drawOval(atom.getPosX() - atom.getHeight(), atom.getPosY() - atom.getHeight(), atom.getCircleHeight(), atom.getCircleWidth());
             g.setColor(Color.red);
-            g.drawString(Integer.toString(a), (int)atoms[a].getX() - atoms[a].getHeight()/2, (int)atoms[a].getY() - atoms[a].getHeight()/2);
             g.setColor(Color.blue);
         }
         g.drawOval((int)zipzap.getMidX()-5, (int)zipzap.getMidY()-5, 10, 10);
@@ -231,14 +231,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
     }
 
-//    @Override
-//    public void actionPerformed(ActionEvent e){
-//        repaint();
-//        if(zip==true){
-//            zipzap.move();
-//        }
-//    }
-
     /**
      * Handles user input for moving pointer position.
      * User can use 'A' or 'Left arrow' to move counter-clockwise around grid.
@@ -250,13 +242,13 @@ public class GamePanel extends JPanel implements KeyListener {
     public void keyPressed(KeyEvent event){
         /* Ensures user pressed a movement key */
         switch(event.getKeyCode()) {
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> green--;
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> green++;
+            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> posPointer--;
+            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> posPointer++;
         }
 
         /* Resets pointer position if it moves out of bounds */
-        if(green < 0) green = 53;
-        else if(green > 53) green = 0;
+        if(posPointer < 0) posPointer = 53;
+        else if(posPointer > 53) posPointer = 0;
     }
 
     /**
@@ -273,7 +265,7 @@ public class GamePanel extends JPanel implements KeyListener {
         }
 
         /* Spawns ray */
-        zipzap.set(arr[green].getLineX()[0], arr[green].getLineY()[0], arr[green].getAngle());
+        zipzap.set(arr[posPointer].getLineX()[0], arr[posPointer].getLineY()[0], arr[posPointer].getAngle());
         zip = true;
         lazer2Count++;
         System.out.println("lazer2Count: " + lazer2Count);
