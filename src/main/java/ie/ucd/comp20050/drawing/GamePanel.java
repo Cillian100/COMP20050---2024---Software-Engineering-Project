@@ -169,6 +169,7 @@ public class GamePanel extends JPanel implements KeyListener {
      * @param list ArrayList<Atom>, input list of Atoms to draw
      */
     private void drawAtoms(ArrayList<Atom> list) {
+        if(list == null) return; // Temp. necessary to alleviate bug on macOS
         for(Atom atom : list) {
             int posX = (int) hex2[atom.getHexagon()].getMiddleX();
             int posY = (int) hex2[atom.getHexagon()].getMiddleY();
@@ -187,6 +188,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private void collisionDetection(ArrayList<Atom> list){
         int bounce=0;
 
+        if(list == null) return; // Temp. necessary to alleviate bug on macOS
         for(Atom atom : list) {
             int posX = (int) hex2[atom.getHexagon()].getMiddleX();
             int posY = (int) hex2[atom.getHexagon()].getMiddleY();

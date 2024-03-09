@@ -13,6 +13,7 @@ public class Main {
 
         // Generate Board should be before this, making an arraylist of hexagons.
         // '61' should then be replaced with that arraylist's size.
+        // We may want to consider a global variable for Atoms, to unify generation+drawing+logic
         ArrayList<Atom> atoms = generateAtoms(5, 61);
 
         // gameWindow will eventually be used to manipulate the elements being drawn

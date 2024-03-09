@@ -47,7 +47,6 @@ public class GameWindow extends JFrame implements ActionListener {
      * Constructor. WIP, this Javadoc will be completed at a later date.
      */
     public GameWindow(String title, boolean resizable) {
-        this.add(panel);
         this.setPreferredSize(WINDOW_SIZE);
         this.setTitle(title);
         this.setResizable(resizable);
@@ -55,6 +54,7 @@ public class GameWindow extends JFrame implements ActionListener {
         this.pack();
         this.setVisible(true);
         this.setLocationRelativeTo(null);
+        this.add(panel);
     }
 
     /**
