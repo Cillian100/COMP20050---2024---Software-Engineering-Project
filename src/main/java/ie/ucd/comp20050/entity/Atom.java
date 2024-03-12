@@ -124,16 +124,6 @@ double laserradius = l.getRadius();
         double slope = dy/dx;
         double angle = Math.atan(slope);
 
-        System.out.print(" ");
-        System.out.println(oolddir);
-        angle = Math.toDegrees(angle);
-        angle = formatAngle(angle,dx,dy);
-        angle = MathUtils.convertToNormal(angle);
-        oolddir = MathUtils.convertToNormal(oolddir);
-        System.out.print("new");
-        System.out.print(oolddir);
-        System.out.print(" ");
-        System.out.println(angle);
        //if it has absorbed previously multply by 2
         if (l.getCollideStatus() == Lazer.collideState.absorb ) modifier = 2;
         //it has collide not absorb
