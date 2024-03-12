@@ -11,6 +11,12 @@ public class Lazer{
     double cos;
     double sin;
 
+    private collideState collideStatus = collideState.never;
+
+    public enum collideState {never,bounce ,absorb};
+
+    public collideState getCollideStatus() {return collideStatus;}
+    public void setCollideStatus(collideState x) {collideStatus = x;}
     public Lazer(int apple, int banana, int cranberry, int durian) {
         x=(double)apple;
         y=(double)banana;
@@ -34,11 +40,17 @@ public class Lazer{
         cos = Math.cos(hold);
         sin = Math.sin(hold);
     }
+
     public void changeDirection(double angle){
         angleA = angle;
         hold = Math.toRadians(angle);
         cos = Math.cos(hold);
         sin = Math.sin(hold);
+    }
+
+    public void addBounce(double bounce)
+    {
+       changeDirection(angleA + bounce);
     }
 
     public double getMidX(){
@@ -50,4 +62,14 @@ public class Lazer{
     public double getDirection(){
         return angleA;
     }
+
+    //easier to work with
+    public double getX() {return this.x;}
+    public double getY() {return this.y;}
+    //probably add a set position
+    public void setX(double x) {this.x = x;}
+    public void setY(double y) { this.y = y;}
+
+    public int getRadius() {return width / 2;}
+
 }

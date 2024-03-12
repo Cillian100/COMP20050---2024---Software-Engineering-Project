@@ -1,7 +1,6 @@
 package ie.ucd.comp20050;
 
 import ie.ucd.comp20050.entity.Atom;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -21,6 +20,7 @@ public class Logic {
         Random random = new Random();
         for(int i = 0; i < count; i++) {
             int hex = random.nextInt(hexagons);
+
             list.add(new Atom(hex));
         }
         return list;

@@ -4,7 +4,7 @@ public class Hexagon2 {
     private double a=60;
     private double b = Math.toRadians(a);
     private double sinSixty=Math.sin(b);
-    private double cosSixty=Math.cos(b);
+   private double cosSixty=Math.cos(b);
     private int numberOfPoints=1;
     private double x2[] = new double[10];
     private double x[] = new double[10];
@@ -89,7 +89,7 @@ public class Hexagon2 {
     }
 
     public double getMiddleX(){
-        return (x[1] + x[4])/2; 
+        return (x[1] + x[4])/2;
     }
 
     public double getMiddleY(){

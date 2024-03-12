@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) {
 
         // Generate Board should be before this, making an arraylist of hexagons.
-        // '61' should then be replaced with that arraylist's size.
+        // '61' should then be replaced with that arraylist's size.aaaaaaaaaaaAAAAAad
         // We may want to consider a global variable for Atoms, to unify generation+drawing+logic
         ArrayList<Atom> atoms = generateAtoms(5, 61);
 
@@ -20,7 +20,7 @@ public class Main {
         GameWindow gameWindow = new GameWindow("BlackBox", false);
 
         // Add Atoms
-        gameWindow.setAtoms(atoms);
+        //gameWindow.setAtoms(atoms);
 
         // Start game clock
         gameWindow.startGame();

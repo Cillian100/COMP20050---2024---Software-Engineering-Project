@@ -5,10 +5,13 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TreeSet;
+
 
 import ie.ucd.comp20050.Arrow;
 import ie.ucd.comp20050.Border;
 import ie.ucd.comp20050.Hexagon2;
+import ie.ucd.comp20050.MathUtils;
 import ie.ucd.comp20050.entity.*;
 
 import static ie.ucd.comp20050.MathUtils.pointsDistance;
@@ -20,7 +23,7 @@ public class GamePanel extends JPanel implements KeyListener {
     int counter;
     Hexagon2[] hex2 = new Hexagon2[100];
     Arrow[] arr = new Arrow[100];
-    Lazer zipzap = new Lazer(-10, -10, 0, 0);
+    Lazer zipzap = new Lazer(-10, -10, 10, 10);
     Lazer2[] zipzoop = new Lazer2[10];
     Border bored;
     Border bored2;
@@ -37,6 +40,15 @@ public class GamePanel extends JPanel implements KeyListener {
     int xConstant=SCREEN_HEIGHT/2;
     int yConstant=SCREEN_WIDTH/2;
 
+
+    double hexagondistance ;
+    final int atomnum = 5;
+
+    TreeSet<Double> hexxs;
+    TreeSet<Double> hexys;
+
+    double atomRadius;
+    double ringRadius;
     /* UPDATED VARS */
 
     /**
@@ -53,6 +65,8 @@ public class GamePanel extends JPanel implements KeyListener {
         SCREEN_HEIGHT = (int) windowSizeInput.getHeight();
         SCREEN_WIDTH = (int) windowSizeInput.getHeight();
         modifier = windowModifierInput;
+        ringRadius = (175 * modifier);
+        atomRadius = ringRadius / 2;
         this.setBackground(Color.black);
         this.setFocusable(true);
         this.addKeyListener(this);
@@ -62,6 +76,8 @@ public class GamePanel extends JPanel implements KeyListener {
         calculateGridInADifferentWay();
         calculateBorderInADifferentWay();
         calculateArrows();
+         makeAtoms();
+        //makeAtomsTest();
     }
 
     /**
@@ -73,12 +89,105 @@ public class GamePanel extends JPanel implements KeyListener {
         atoms = input;
     }
 
+
+
+
+   private void makeAtomsTest()
+    {
+        atoms = new ArrayList<Atom>();
+        for(int i = 0; i < atomnum; i++) {
+
+            int pos0 = 28;
+            int pos1 = 12;
+            int pos2 = 29;
+            int pos3 = 38;
+            int pos4 = 37;
+            switch(i)
+            {
+                case 0:
+                    atoms.add(new Atom(
+                            hex2[pos0].getMiddleX(),
+                            hex2[pos0].getMiddleY(),
+                            atomRadius,
+                            ringRadius,
+                            hexagondistance
+                            ,pos0
+                    ));
+                case 1:
+                    atoms.add(new Atom(
+                            hex2[pos1].getMiddleX(),
+                            hex2[pos1].getMiddleY(),
+                            atomRadius,
+                            ringRadius,
+                            hexagondistance
+                            ,pos1
+                    ));
+                case 2:
+                    atoms.add(new Atom(
+                            hex2[pos2].getMiddleX(),
+                            hex2[pos2].getMiddleY(),
+                            atomRadius,
+                            ringRadius,
+                            hexagondistance
+                            ,pos2
+                    ));
+                case 3:
+                    atoms.add(new Atom(
+                            hex2[pos3].getMiddleX(),
+                            hex2[pos3].getMiddleY(),
+                            atomRadius,
+                            ringRadius,
+                            hexagondistance
+                            ,pos3
+                    ));
+                case 4:
+            }atoms.add(new Atom(
+                    hex2[pos4].getMiddleX(),
+                    hex2[pos4].getMiddleY(),
+                    atomRadius,
+                    ringRadius,
+                    hexagondistance
+                    ,pos4
+            ));
+
+        }
+    }
+
+    private void makeAtoms()
+    {
+        boolean already[] = new boolean[100];
+        atoms = new ArrayList<Atom>();
+        Random random = new Random();
+       int hex = 0;
+        for(int i = 0; i < atomnum; i++) {
+            while (already[hex])
+            {
+                 hex = random.nextInt(hexagonCounter2);
+            }
+            already[hex] = true;
+
+            atoms.add(new Atom(
+                    hex2[hex].getMiddleX(),
+                    hex2[hex].getMiddleY(),
+                    atomRadius,
+                    ringRadius,
+                    hexagondistance
+                    ,hex
+            ));
+
+
+        }
+
+
+    }
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         graph = g; // Updates stored Graphics
         drawBackground(atoms);
+
     }
+
 
     /*
     Generates the grid, and creates the count of hexagons.
@@ -97,6 +206,7 @@ public class GamePanel extends JPanel implements KeyListener {
         int flip=1;
         int flip2=flip;
         int layer2=1;
+
 
         for(int a=0;a<6;a++){
             hex2[hexagonCounter2] = new Hexagon2(hex2[0].getX()[a], hex2[0].getY()[a], modifier, angle);
@@ -124,6 +234,16 @@ public class GamePanel extends JPanel implements KeyListener {
             layer2++;
             flip2=flip;
         }
+
+        hexxs = new TreeSet<Double>();
+        hexys = new TreeSet<Double>();
+        for (Hexagon2 hex:hex2)
+        {
+            if (hex == null ) continue;
+            hexxs.add(hex.getMiddleX());
+            hexys.add(hex.getMiddleY());
+        }
+        hexagondistance  = Math.abs(hex2[1].getMiddleX() - hex2[0].getMiddleY());
     }
 
     private void calculateBorderInADifferentWay(){
@@ -147,7 +267,7 @@ public class GamePanel extends JPanel implements KeyListener {
             }
             counter--;
             numberOfPoints--;
-        }   
+        }
 
         bored2 = new Border(x, y, numberOfPoints);
     }
@@ -173,7 +293,7 @@ public class GamePanel extends JPanel implements KeyListener {
         for(Atom atom : list) {
             int posX = (int) hex2[atom.getHexagon()].getMiddleX();
             int posY = (int) hex2[atom.getHexagon()].getMiddleY();
-            int size = (int) (175 * modifier);
+            int size =(int) (175 * modifier);
 
             graph.fillOval(posX - size/2, posY - size/2, size, size);
             graph.drawOval(posX - size, posY - size, size*2, size*2);
@@ -182,12 +302,64 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+
+
+
+
     /**
      * Method to handle collision detection with atoms
-     */ //@TODO Refactor. Collision detection should probably be moved into Ray entity, or otherwise a separate class
-    private void collisionDetection(ArrayList<Atom> list){
-        int bounce=0;
+     */
+    private void collisionDetection(){
+        if (!zip) return;
+        double tmp= 0;
+        double bounce=0;
 
+        for(int a=0;a<atomnum;a++){
+            tmp = atoms.get(a).collide(zipzap,hexxs,hexys);
+            if (tmp != 0 && tmp != Atom.DOUBLE && tmp != Atom.EXIT_180 && tmp != Atom.EXIT_ABSORB)
+                bounce = tmp;
+            else if (tmp == Atom.DOUBLE)
+                bounce *= 2;
+            else if (tmp == Atom.EXIT_ABSORB) {
+                //to avoid overlapping radii
+                for (;a< atomnum;a++)
+                    atoms.get(a).setCollideTrue();
+                zip = false; break;
+            }
+            else if (tmp == Atom.EXIT_180) //this overpowers everything excpet for absorb at edge
+            {
+                bounce = 180;
+                for (;a< atomnum;a++)
+                {
+                   if (atoms.get(a).collide(zipzap,hexxs,hexys)==Atom.EXIT_ABSORB) {
+                       zip = false;
+                   }
+                }
+                break;
+           }
+        }
+        if (bounce == Atom.ABSORB) zip = false;
+        //if it has collided and not at edge centre
+        double x = MathUtils.closestValue(zipzap.getX(),hexxs);
+        double y = MathUtils.closestValue(zipzap.getY(),hexys);
+        if (MathUtils.squ(x - zipzap.getX()) + MathUtils.squ(y -zipzap.getY()) > MathUtils.squ( hexagondistance))
+        {
+           System.out.println("passed");
+            zip = false;
+        }
+        else if (bounce != 0 && tmp != Atom.EXIT_180) {
+                zipzap.setX(x);
+                zipzap.setY(y);
+        }
+
+        zipzap.setCollideStatus(Lazer.collideState.never);
+        zipzap.addBounce(bounce);
+    }
+
+    /*
+    private void collisionDetection(ArrayList<Atom> list){
+
+        int bounce=0;
         if(list == null) return; // Temp. necessary to alleviate bug on macOS
         for(Atom atom : list) {
             int posX = (int) hex2[atom.getHexagon()].getMiddleX();
@@ -203,37 +375,37 @@ public class GamePanel extends JPanel implements KeyListener {
             zipzap.changeDirection(zipzap.getDirection() + bounce);
         }
     }
-
+*/
     private void drawBackground(ArrayList<Atom> atoms){
-        collisionDetection(atoms);
+        collisionDetection();
         graph.setColor(Color.blue);
 
         for(int a=0;a<bored2.getCountPoints();a++){
-             if(posPointer == a){
+            if(posPointer == a){
                 graph.setColor(Color.yellow);
-             }
-             graph.drawLine(arr[a].getLineX()[0], arr[a].getLineY()[0], arr[a].getLineX()[1], arr[a].getLineY()[1]);
-             graph.drawString(Integer.toString(a), arr[a].getLineX()[1], arr[a].getLineY()[1]);
-             if(posPointer ==a){
-                 graph.setColor(Color.blue);
-             }
-         }
+            }
+            graph.drawLine(arr[a].getLineX()[0], arr[a].getLineY()[0], arr[a].getLineX()[1], arr[a].getLineY()[1]);
+            graph.drawString(Integer.toString(a), arr[a].getLineX()[1], arr[a].getLineY()[1]);
+            if(posPointer ==a){
+                graph.setColor(Color.blue);
+            }
+        }
 
         drawAtoms(atoms);
 
         graph.drawOval((int)zipzap.getMidX()-5, (int)zipzap.getMidY()-5, 10, 10);
         graph.setColor(Color.red);
-        
+
         //for(int a=0;a<lazer2Count;a++){
         //    if(zipzoop[a].x[0]!=0 && zipzoop[a].x[1]!=0){
-                //g.drawLine(zipzoop[a].x[0], zipzoop[a].y1, zipzoop[a].x2, zipzoop[a].y2);
-                //g.drawPolyline(zipzoop[a].getX(), zipzoop[a].getY(), zipzoop[a].getNum());
+        //g.drawLine(zipzoop[a].x[0], zipzoop[a].y1, zipzoop[a].x2, zipzoop[a].y2);
+        //g.drawPolyline(zipzoop[a].getX(), zipzoop[a].getY(), zipzoop[a].getNum());
         //    }
         //}
 
         graph.drawString("Player 1: Press a and d to move. Press and release w to shoot.", 25, 25);
         graph.drawString("Number of lazers left:" + Integer.toString(10-lazer2Count), 25, 50);
-        
+
         graph.setColor(Color.pink);
         for(int a=0;a<hexagonCounter2;a++){
             graph.drawPolygon(hex2[a].getXInteger(), hex2[a].getYInteger(), hex2[a].getNumberOfPoints());
@@ -282,6 +454,13 @@ public class GamePanel extends JPanel implements KeyListener {
         zip = true;
         lazer2Count++;
         System.out.println("lazer2Count: " + lazer2Count);
+
+       //reset atom collisions
+        for (Atom atom:atoms)
+        {
+           atom.resetCollisionStatus();
+        }
+
     }
 
     @Override
