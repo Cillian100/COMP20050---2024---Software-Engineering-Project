@@ -58,14 +58,7 @@ public final class MathUtils {
        return angle;
     }
 
-    //returns true if coll,or actuallhy maybe not idk
-    public static boolean circeColl(double x,double y,double circlecentreX,double circlecentreY,double circleradius)
-    {
-       double g = squ(x - circlecentreX)  + squ(y - circlecentreY);
-       double r = squ(circleradius);
-       return r >= g;
 
-    }
 
     public static boolean twoCircleColl(double x1,double y1,double x2,double y2,double r1,double r2)
     {
