@@ -54,7 +54,8 @@ public final class MathUtils {
     {
        if (angle <= 360 && angle >= 0) return angle;
        angle %= 360;
-       if (angle <0 ) angle = 360 + angle;
+       if (angle > -1 && angle < 0 ) return 0;
+       else if (angle <0 ) angle = 360 + angle;
        return angle;
     }
 
