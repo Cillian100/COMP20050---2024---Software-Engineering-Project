@@ -8,14 +8,12 @@ import java.util.Random;
 import java.util.TreeSet;
 
 
-import ie.ucd.comp20050.Arrow;
-import ie.ucd.comp20050.Border;
-import ie.ucd.comp20050.Hexagon2;
-import ie.ucd.comp20050.MathUtils;
+import ie.ucd.comp20050.*;
 import ie.ucd.comp20050.entity.*;
 
-import static ie.ucd.comp20050.MathUtils.pointsDistance;
 
+import static ie.ucd.comp20050.MathUtils.pointsDistance;
+import java.util.Scanner;
 
 public class GamePanel extends JPanel implements KeyListener {
     int x[];
@@ -47,6 +45,8 @@ public class GamePanel extends JPanel implements KeyListener {
     TreeSet<Double> hexxs;
     TreeSet<Double> hexys;
 
+    PlayerInteractions playerhandler;
+
     double atomRadius;
     double ringRadius;
     /* UPDATED VARS */
@@ -77,7 +77,11 @@ public class GamePanel extends JPanel implements KeyListener {
         calculateBorderInADifferentWay();
         calculateArrows();
          makeAtoms();
+
+         playerhandler= new PlayerInteractions(this);
+
         //makeAtomsTest();
+        //idk if this should be here
     }
 
     /**
@@ -99,7 +103,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
             int pos0 = 28;
             int pos1 = 12;
-            int pos2 = 29;
+            int pos2 = 21;
             int pos3 = 38;
             int pos4 = 37;
             switch(i)
@@ -441,11 +445,13 @@ public class GamePanel extends JPanel implements KeyListener {
      * User can use 'W' or 'Space' to spawn a ray at his current pointer position.
      * @param event event to be processed
      */
+
     @Override
     public void keyReleased(KeyEvent event){
         /* Ensures user pressed W or space */
         switch(event.getKeyCode()) {
             case KeyEvent.VK_W, KeyEvent.VK_SPACE -> System.out.println("Ray Spawned");
+            case KeyEvent.VK_G -> {playerhandler.endTurn(lazer2Count); return;}
             default -> { return; }
         }
 
@@ -466,4 +472,18 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e){ }
 
+
+
+    public void resetGame()
+    {
+        lazer2Count = 0;
+        atoms.clear();
+        makeAtoms();
+        zipzap = new Lazer(-10, -10, 10, 10);
+    }
+
+    public ArrayList<Atom> getAtoms() { return atoms; }
+
+    public int getAtomNum() { return atomnum; }
+    public int getHexagonNum() {return hexagonCounter2;}
 }
