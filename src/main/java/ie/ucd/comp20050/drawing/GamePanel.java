@@ -32,14 +32,17 @@ public class GamePanel extends JPanel implements KeyListener {
     int lazer2Count =0;
     boolean setter=true;
     Character setterInput;
-    String toDisplay="Please enter position of atom 1 (and press Enter): ";
+    String toDisplay="Player 2 enter position of atom 1 (and press Enter): ";
+    String toDisplay3="Enter Atom guess 1 (and press Enter): ";
     String toDisplay2="";
     String holderString="";
     int setterCounter=0;
+    int guessCounter=0;
     ArrayList<Integer> starting = new ArrayList<Integer>();
     ArrayList<Integer> ending = new ArrayList<Integer>();
     boolean userGenerated=true;
     boolean guessing=false;
+    int gameOver=0;
 
     /* LEGACY VARS */
     double modifier;
@@ -57,8 +60,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
     PlayerInteractions playerhandler;
 
-    Player player1 = new Player(0);
-    Player player2 = new Player(0);
+    Player[] player = new Player[2];
+
+    int playerCounter=0;
 
     double atomRadius;
     double ringRadius;
@@ -86,6 +90,8 @@ public class GamePanel extends JPanel implements KeyListener {
         for(int a=0;a<10;a++){
             zipzoop[a] = new Lazer2();
         }
+        player[0] = new Player(0);
+        player[1] = new Player(0);
         calculateGridInADifferentWay();
         calculateBorderInADifferentWay();
         calculateArrows();
@@ -223,12 +229,7 @@ public class GamePanel extends JPanel implements KeyListener {
         setter=false;
     }
 
-    public void drawWilly(){
-        Graphics g = getGraphics();
-        g.fillOval(100, 100, 200, 200);
-        //System.out.println("hello?");
-    }
-    
+
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -424,8 +425,29 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 */
+    private boolean guessAtoms(int answer){
+        for(int a=0;a<atomnum;a++){
+            //System.out.println("Atom: " + atoms.get(a).getHexagon());
+            if(atoms.get(a).getHexagon() == answer){
+                return true;
+            }
+        }   
+    
+        return false;
+    }
+
+    private void moveAtoms(){
+        for(int i = 0; i < atomnum; i++){
+            atoms.get(i).change(100, 100, 0);
+        }
+    }
+
+
     private void drawBackground(ArrayList<Atom> atoms){
+        if(gameOver!=2){
+
         int holder=0;
+        //System.out.println("player " + playerCounter);
         collisionDetection();
         graph.setColor(Color.blue);
 
@@ -439,6 +461,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 graph.setColor(Color.blue);
             }
         }
+
         if(setter==true){
             drawAtoms(atoms);
         }
@@ -463,8 +486,9 @@ public class GamePanel extends JPanel implements KeyListener {
             int lineHeight = graph.getFontMetrics().getHeight();
             graph.drawString(startingPositions, (int)(1400*modifier), why);
             for(int a=0;a<starting.size();a++){
-                graph.drawString(starting.get(a).toString(), (int)(1400*modifier), why+=lineHeight);
+                graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + "todo", (int)(1400*modifier), why+=lineHeight);
             }
+            setterInput=null;
         }else if(setter==true && guessing==false){
             if(setterInput!=null){   
                 if((int)setterInput==10){
@@ -474,12 +498,12 @@ public class GamePanel extends JPanel implements KeyListener {
                         holderString="invalid input!";
                         holder=100;
                     }
-                    System.out.println(holder);
+                    //System.out.println(holder);
                     if(holder<=60){
                         changeAtoms(holder, setterCounter);
                         setterCounter++;
                     }
-                    toDisplay="Please enter position of atom 1 (and press Enter): ";
+                    toDisplay="Player " + (((playerCounter+1)%2)+1) + " enter position of atom " + setterCounter + " (and press Enter): ";
                     toDisplay2="";
                 }else if((int)setterInput==8){
                     StringBuffer sb = new StringBuffer(toDisplay);
@@ -504,8 +528,50 @@ public class GamePanel extends JPanel implements KeyListener {
                 setter=false;
             }
         }else if(guessing==true){
-            toDisplay="Enter atom position guess: ";
-            graph.drawString(toDisplay, (int)(50*modifier), (int)(50*modifier));
+            if(setterInput!=null){
+                if((int)setterInput==10){
+                    try{
+                        holder=Integer.parseInt(toDisplay2);
+                    }catch(Exception E){
+                        holderString="invalid input!";
+                        holder=100;
+                    }
+                    //System.out.println(holder);
+                    if(holder<=60){
+                        if(guessAtoms(holder)){
+                            holderString="correct!";
+                            player[playerCounter].incrementScore();
+                            System.out.println("Player score: " + player[playerCounter].getScore());
+                        }else{
+                            holderString="wrong";
+                        }
+                        guessCounter++;
+                    }
+                    toDisplay3="Enter Atom guess " + guessCounter + " (and press Enter): ";
+                    toDisplay2="";
+                }else{
+                    toDisplay3=toDisplay3.concat(String.valueOf(setterInput));
+                    toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
+                } 
+            }
+
+            graph.drawString(toDisplay3, (int)(50*modifier), (int)(50*modifier));
+            graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
+            setterInput=null;
+            if(guessCounter==5){
+                gameOver++;
+                guessing=false;
+                setter=true;
+                playerCounter=1;
+                lazer2Count=0;
+                setterCounter=0;
+                guessCounter=0;
+                toDisplay="Player 1 enter position of atom 1 (and press Enter): ";
+                for(int a=starting.size();a>0;a--){
+                    starting.remove(a-1);
+                }
+                moveAtoms();
+            }
         }
 
         graph.setColor(Color.pink);
@@ -515,9 +581,20 @@ public class GamePanel extends JPanel implements KeyListener {
         }
         graph.setColor(Color.RED);
         graph.drawPolygon(bored2.getX(), bored2.getY(), bored2.getCountPoints());
-
+    }else{
+        int lineHeight = graph.getFontMetrics().getHeight();
+        graph.setColor(Color.RED);
+        graph.drawString("GAME OVER", SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        if(player[0].getScore()>player[1].getScore()){
+            graph.drawString("Player 1 wins, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 2 loses, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+        }else{
+            graph.drawString("Player 2 wins, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 1 loses, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+        }
     }
 
+    }
     /**
      * Handles user input for moving pointer position.
      * User can use 'A' or 'Left arrow' to move counter-clockwise around grid.
@@ -547,7 +624,7 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent event){
         /* Ensures user pressed W or space */
-        if(setter==false){
+        if(setter==false && guessing==false){
             switch(event.getKeyCode()) {
                 case KeyEvent.VK_W, KeyEvent.VK_SPACE -> System.out.println("Ray Spawned");
                 case KeyEvent.VK_G -> {playerhandler.endTurn(lazer2Count); return;}
@@ -557,6 +634,7 @@ public class GamePanel extends JPanel implements KeyListener {
         /* Spawns ray */
         zipzap.set(arr[posPointer].getLineX()[0], arr[posPointer].getLineY()[0], arr[posPointer].getAngle());
         starting.add(posPointer);
+        ending.add(0);
         zip = true;
         lazer2Count++;
         System.out.println("lazer2Count: " + lazer2Count);
