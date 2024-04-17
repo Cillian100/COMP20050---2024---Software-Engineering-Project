@@ -51,6 +51,16 @@ public class Atom {
         hexagon = hexagonInput;
     }
 
+    public double getX(){
+        return mx;
+    }
+
+    public void change(double x, double y, int hexagonInput){
+        mx = x;
+        my = y;
+        hexagon = hexagonInput;
+    }
+
     /**
      * Retrieve the index of the Atom's hexagon
      * @return integer, hexagon index

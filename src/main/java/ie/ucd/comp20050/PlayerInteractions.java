@@ -63,7 +63,6 @@ public class PlayerInteractions {
 
     void endGame()
     {
-
         System.out.println("End of game. Result is: ");
         System.out.println("Player A: " + playerScores.get(0) + " Player B: " + playerScores.get(1));
         if (playerScores.get(0).equals(playerScores.get(1)))
