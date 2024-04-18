@@ -51,7 +51,7 @@ public class GamePanel extends JPanel implements KeyListener {
     int xConstant=SCREEN_HEIGHT/2;
     int yConstant=SCREEN_WIDTH/2;
 
-
+    boolean [] guessed;
     double hexagondistance ;
     final int atomnum = 5;
 
@@ -101,10 +101,8 @@ public class GamePanel extends JPanel implements KeyListener {
             makeAtoms();
         }
 
-        playerhandler= new PlayerInteractions(this);
+        guessed = new boolean[61];
 
-        //makeAtomsTest();
-        //idk if this should be here
     }
 
     /**
@@ -117,68 +115,6 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
 
-
-
-   private void makeAtomsTest()
-    {
-        atoms = new ArrayList<Atom>();
-        for(int i = 0; i < atomnum; i++) {
-
-            int pos0 = 28;
-            int pos1 = 12;
-            int pos2 = 21;
-            int pos3 = 38;
-            int pos4 = 37;
-            switch(i)
-            {
-                case 0:
-                    atoms.add(new Atom(
-                            hex2[pos0].getMiddleX(),
-                            hex2[pos0].getMiddleY(),
-                            atomRadius,
-                            ringRadius,
-                            hexagondistance
-                            ,pos0
-                    ));
-                case 1:
-                    atoms.add(new Atom(
-                            hex2[pos1].getMiddleX(),
-                            hex2[pos1].getMiddleY(),
-                            atomRadius,
-                            ringRadius,
-                            hexagondistance
-                            ,pos1
-                    ));
-                case 2:
-                    atoms.add(new Atom(
-                            hex2[pos2].getMiddleX(),
-                            hex2[pos2].getMiddleY(),
-                            atomRadius,
-                            ringRadius,
-                            hexagondistance
-                            ,pos2
-                    ));
-                case 3:
-                    atoms.add(new Atom(
-                            hex2[pos3].getMiddleX(),
-                            hex2[pos3].getMiddleY(),
-                            atomRadius,
-                            ringRadius,
-                            hexagondistance
-                            ,pos3
-                    ));
-                case 4:
-            }atoms.add(new Atom(
-                    hex2[pos4].getMiddleX(),
-                    hex2[pos4].getMiddleY(),
-                    atomRadius,
-                    ringRadius,
-                    hexagondistance
-                    ,pos4
-            ));
-
-        }
-    }
 
     private void makeAtomsSetterInput(){
         //Scanner myObj = new Scanner(System.in);
@@ -393,7 +329,6 @@ public class GamePanel extends JPanel implements KeyListener {
         double y = MathUtils.closestValue(zipzap.getY(),hexys);
         if (MathUtils.squ(x - zipzap.getX()) + MathUtils.squ(y -zipzap.getY()) > MathUtils.squ( hexagondistance))
         {
-           System.out.println("passed");
             zip = false;
         }
         else if (bounce != 0 && tmp != Atom.EXIT_180) {
@@ -405,29 +340,9 @@ public class GamePanel extends JPanel implements KeyListener {
         zipzap.addBounce(bounce);
     }
 
-    /*
-    private void collisionDetection(ArrayList<Atom> list){
-
-        int bounce=0;
-        if(list == null) return; // Temp. necessary t("invalid input!");o alleviate bug on macOS
-        for(Atom atom : list) {
-            int posX = (int) hex2[atom.getHexagon()].getMiddleX();
-            int posY = (int) hex2[atom.getHexagon()].getMiddleY();
-            int dist = pointsDistance((int) zipzap.getMidX(), (int) zipzap.getMidY(), posX, posY);
-
-            if(dist < 50) zip = false;
-            if(dist < 100) {
-                if(zipzap.getDirection() == 180); // does nothing?
-                else if(zipzap.getMidY() > posY) bounce = -60;
-                else if(zipzap.getMidY() < posY) bounce = 60;
-            }
-            zipzap.changeDirection(zipzap.getDirection() + bounce);
-        }
-    }
-*/
     private boolean guessAtoms(int answer){
         for(int a=0;a<atomnum;a++){
-            //System.out.println("Atom: " + atoms.get(a).getHexagon());
+
             if(atoms.get(a).getHexagon() == answer){
                 return true;
             }
@@ -441,6 +356,13 @@ public class GamePanel extends JPanel implements KeyListener {
             atoms.get(i).change(100, 100, 0);
         }
     }
+
+    private boolean atomNotAlrThere(int x)
+    {
+        for (Atom a:atoms) if (a.getHexagon() == x) return false;
+        return true;
+    }
+
 
 
     private void drawBackground(ArrayList<Atom> atoms){
@@ -462,13 +384,13 @@ public class GamePanel extends JPanel implements KeyListener {
             }
         }
 
-        if(setter==true){
+        if(setter==true) {
             drawAtoms(atoms);
+
+
+            graph.drawOval((int) zipzap.getMidX() - 5, (int) zipzap.getMidY() - 5, 10, 10);
+            graph.setColor(Color.red);
         }
-
-        graph.drawOval((int)zipzap.getMidX()-5, (int)zipzap.getMidY()-5, 10, 10);
-        graph.setColor(Color.red);
-
         //for(int a=0;a<lazer2Count;a++){
         //    if(zipzoop[a].x[0]!=0 && zipzoop[a].x[1]!=0){
         //g.drawLine(zipzoop[a].x[0], zipzoop[a].y1, zipzoop[a].x2, zipzoop[a].y2);
@@ -492,6 +414,7 @@ public class GamePanel extends JPanel implements KeyListener {
         }else if(setter==true && guessing==false){
             if(setterInput!=null){   
                 if((int)setterInput==10){
+                    holderString = "";
                     try{
                         holder=Integer.parseInt(toDisplay2);
                     }catch(Exception E){
@@ -499,10 +422,12 @@ public class GamePanel extends JPanel implements KeyListener {
                         holder=100;
                     }
                     //System.out.println(holder);
-                    if(holder<=60){
+                    if(holder<=60 && atomNotAlrThere(holder)){
                         changeAtoms(holder, setterCounter);
                         setterCounter++;
                     }
+                    else holderString="invalid input!";
+
                     toDisplay="Player " + (((playerCounter+1)%2)+1) + " enter position of atom " + setterCounter + " (and press Enter): ";
                     toDisplay2="";
                 }else if((int)setterInput==8){
@@ -537,7 +462,8 @@ public class GamePanel extends JPanel implements KeyListener {
                         holder=100;
                     }
                     //System.out.println(holder);
-                    if(holder<=60){
+                    if(holder<=60 && !guessed[holder]){
+                        guessed[holder] = true;
                         if(guessAtoms(holder)){
                             holderString="correct!";
                             player[playerCounter].incrementScore();
@@ -559,6 +485,7 @@ public class GamePanel extends JPanel implements KeyListener {
             graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
             setterInput=null;
             if(guessCounter==5){
+                guessed = new boolean[61];
                 gameOver++;
                 guessing=false;
                 setter=true;
