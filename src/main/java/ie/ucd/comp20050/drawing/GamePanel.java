@@ -15,10 +15,8 @@ public class GamePanel extends JPanel implements KeyListener {
     int counter;
     Hexagon2[] hex2 = new Hexagon2[100];
     Arrow[] arr = new Arrow[100];
-    Lazer zipzap = new Lazer(-10, -10, 10, 10);
-    Lazer2[] zipzoop = new Lazer2[10];
-    Border bored; // @TODO Deprecate
-    Border bored2;
+    LaserRay laser = new LaserRay(-10, -10, 10, 10);
+    Border border;
     int hexagonCounter=0, hexagonCounter2=0;
     int posPointer = 0;
     boolean zip=false;
@@ -81,13 +79,10 @@ public class GamePanel extends JPanel implements KeyListener {
         this.setBackground(Color.black);
         this.setFocusable(true);
         this.addKeyListener(this);
-        for(int a=0;a<10;a++){
-            zipzoop[a] = new Lazer2();
-        }
         player[0] = new Player(0);
         player[1] = new Player(0);
         calculateGridInADifferentWay();
-        bored2 = new Border(hex2);
+        border = new Border(hex2);
         calculateArrows();
         if(userGenerated){
             makeAtomsSetterInput();
@@ -223,11 +218,11 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     private void calculateArrows(){
-        for(int a=0;a<bored2.getCountPoints();a++){
-            if(a!=bored2.getCountPoints()-1){
-                arr[a] = new Arrow((int)bored2.getX()[a], (int)bored2.getY()[a], (int)bored2.getX()[a+1], (int)bored2.getY()[a+1], modifier);
+        for(int a = 0; a< border.getCountPoints(); a++){
+            if(a!= border.getCountPoints()-1){
+                arr[a] = new Arrow((int) border.getX()[a], (int) border.getY()[a], (int) border.getX()[a+1], (int) border.getY()[a+1], modifier);
             }else{
-                arr[a] = new Arrow((int)bored2.getX()[a], (int)bored2.getY()[a], (int)bored2.getX()[0], (int)bored2.getY()[0], modifier);
+                arr[a] = new Arrow((int) border.getX()[a], (int) border.getY()[a], (int) border.getX()[0], (int) border.getY()[0], modifier);
             }
         }
     }
@@ -238,6 +233,7 @@ public class GamePanel extends JPanel implements KeyListener {
      */
     private void drawAtoms(ArrayList<Atom> list) {
         if(list == null) return; // Temp. necessary to alleviate bug on macOS @TODO Better explanation
+        graph.setColor(Color.blue);
         for(Atom atom : list) {
             int posX = (int) hex2[atom.getHexagon()].getMiddleX();
             int posY = (int) hex2[atom.getHexagon()].getMiddleY();
@@ -259,7 +255,7 @@ public class GamePanel extends JPanel implements KeyListener {
         double bounce=0;
 
         for(int a=0;a<atomnum;a++){
-            tmp = atoms.get(a).collide(zipzap,hexxs,hexys);
+            tmp = atoms.get(a).collide(laser,hexxs,hexys);
             if (tmp != 0 && tmp != Atom.DOUBLE && tmp != Atom.EXIT_180 && tmp != Atom.EXIT_ABSORB)
                 bounce = tmp;
             else if (tmp == Atom.DOUBLE)
@@ -275,7 +271,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 bounce = 180;
                 for (;a< atomnum;a++)
                 {
-                   if (atoms.get(a).collide(zipzap,hexxs,hexys)==Atom.EXIT_ABSORB) {
+                   if (atoms.get(a).collide(laser,hexxs,hexys)==Atom.EXIT_ABSORB) {
                        zip = false;
                    }
                 }
@@ -284,41 +280,36 @@ public class GamePanel extends JPanel implements KeyListener {
         }
         if (bounce == Atom.ABSORB) zip = false;
         //if it has collided and not at edge centre
-        double x = MathUtils.closestValue(zipzap.getX(),hexxs);
-        double y = MathUtils.closestValue(zipzap.getY(),hexys);
-        if (MathUtils.squ(x - zipzap.getX()) + MathUtils.squ(y -zipzap.getY()) > MathUtils.squ( hexagondistance))
+        double x = MathUtils.closestValue(laser.getPosX(),hexxs);
+        double y = MathUtils.closestValue(laser.getPosY(),hexys);
+        if (MathUtils.squ(x - laser.getPosX()) + MathUtils.squ(y - laser.getPosY()) > MathUtils.squ( hexagondistance))
         {
             zip = false;
         }
         else if (bounce != 0 && tmp != Atom.EXIT_180) {
-                zipzap.setX(x);
-                zipzap.setY(y);
+                laser.setPosX(x);
+                laser.setPosY(y);
         }
 
-        zipzap.setCollideStatus(Lazer.collideState.never);
-        zipzap.addBounce(bounce);
+        laser.setCollideStatus(LaserRay.CollideState.never);
+        laser.addBounce(bounce);
     }
 
-    private boolean guessAtoms(int answer){
-        for(int a=0;a<atomnum;a++){
-
-            if(atoms.get(a).getHexagon() == answer){
-                return true;
-            }
-        }   
-    
+    private boolean guessAtoms(int answer) {
+        for(int a=0; a<atomnum; a++){
+            if(atoms.get(a).getHexagon() == answer) return true;
+        }
         return false;
     }
 
-    private void moveAtoms(){
-        for(int i = 0; i < atomnum; i++){
+    private void moveAtoms() {
+        for(int i = 0; i < atomnum; i++)
             atoms.get(i).change(100, 100, 0);
-        }
     }
 
-    private boolean atomNotAlrThere(int x)
-    {
-        for (Atom a:atoms) if (a.getHexagon() == x) return false;
+    private boolean atomNotAlrThere(int x) {
+        for (Atom a : atoms)
+            if (a.getHexagon() == x) return false;
         return true;
     }
 
@@ -326,168 +317,185 @@ public class GamePanel extends JPanel implements KeyListener {
      * Primarily handles drawing of game itself, along with other game logic.
      * @param atoms ArrayList<Atom>, atoms to be drawn ~ used
      */
-    private void drawBackground(ArrayList<Atom> atoms){
-        if(gameOver!=2){
+    private void drawBackground(ArrayList<Atom> atoms) {
+        if(gameOver!=2) {
 
-        int holder=0;
-        //System.out.println("player " + playerCounter);
-        collisionDetection();
-        graph.setColor(Color.blue);
+            int holder=0;
+            //System.out.println("player " + playerCounter);
+            collisionDetection();
 
-        for(int a=0;a<bored2.getCountPoints();a++){
-            if(posPointer == a && !setter){
-                graph.setColor(Color.yellow);
+            if(setter) {
+                drawAtoms(atoms);
+                drawRay(laser);
             }
-            graph.drawLine(arr[a].getLineX()[0], arr[a].getLineY()[0], arr[a].getLineX()[1], arr[a].getLineY()[1]);
-            graph.drawString(Integer.toString(a), arr[a].getLineX()[1], arr[a].getLineY()[1]);
-            if(posPointer == a && !setter){
-                graph.setColor(Color.blue);
+            //drawRay(laser); // FOR DEBUGGING! @TODO Comment out!!!
+
+            graph.setColor(Color.red); // Unsure what this is colouring!
+            if(lazer2Count>=10) guessing=true;
+
+            if(!setter && !guessing) {
+                String startingPositions = "Atom starting & ending positions:\n";
+                graph.drawString("Player 1: Press a and d to move. Press and release w to shoot.", (int)(50*modifier), (int)(50*modifier));
+                graph.drawString("Number of lazers left:" + Integer.toString(10-lazer2Count), (int)(25*modifier), (int)(100*modifier));
+                int why=(int)(1500*modifier);
+                int lineHeight = graph.getFontMetrics().getHeight();
+                graph.drawString(startingPositions, (int)(1400*modifier), why);
+                for(int a=0;a<starting.size();a++)
+                    graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + "todo", (int)(1400*modifier), why+=lineHeight);
+                setterInput=null;
             }
-        }
-
-        if(setter) {
-            drawAtoms(atoms);
-            graph.drawOval((int) zipzap.getMidX() - 5, (int) zipzap.getMidY() - 5, 10, 10);
-            graph.setColor(Color.red);
-        }
-
-        /* Draws the ray. Used for debugging! @TODO Comment out */
-        graph.setColor(Color.yellow);
-        graph.drawOval((int)zipzap.getMidX()-5, (int)zipzap.getMidY()-5, 10, 10);
-
-        //for(int a=0;a<lazer2Count;a++){ @TODO Remove if unnecessary
-        //    if(zipzoop[a].x[0]!=0 && zipzoop[a].x[1]!=0){
-        //g.drawLine(zipzoop[a].x[0], zipzoop[a].y1, zipzoop[a].x2, zipzoop[a].y2);
-        //g.drawPolyline(zipzoop[a].getX(), zipzoop[a].getY(), zipzoop[a].getNum());
-        //    }
-        //}
-
-        if(lazer2Count>=10) guessing=true;
-
-        if(!setter && !guessing) {
-            String startingPositions = "Atom starting & ending positions:\n";
-            graph.drawString("Player 1: Press a and d to move. Press and release w to shoot.", (int)(50*modifier), (int)(50*modifier));
-            graph.drawString("Number of lazers left:" + Integer.toString(10-lazer2Count), (int)(25*modifier), (int)(100*modifier));
-            int why=(int)(1500*modifier);
-            int lineHeight = graph.getFontMetrics().getHeight();
-            graph.drawString(startingPositions, (int)(1400*modifier), why);
-            for(int a=0;a<starting.size();a++){
-                graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + "todo", (int)(1400*modifier), why+=lineHeight);
-            }
-            setterInput=null;
-        }
-        else if(setter && !guessing){
-            if(setterInput!=null){   
-                if((int)setterInput==10){
-                    holderString = "";
-                    try{
-                        holder=Integer.parseInt(toDisplay2);
-                    }catch(Exception E){
-                        holderString="invalid input!";
-                        holder=100;
-                    }
-                    //System.out.println(holder);
-                    if(holder<=60 && atomNotAlrThere(holder)){
-                        changeAtoms(holder, setterCounter);
-                        setterCounter++;
-                    }
-                    else holderString="invalid input!";
-
-                    toDisplay="Player " + (((playerCounter+1)%2)+1) + " enter position of atom " + setterCounter + " (and press Enter): ";
-                    toDisplay2="";
-                }else if((int)setterInput==8){
-                    StringBuffer sb = new StringBuffer(toDisplay);
-                    StringBuffer sp = new StringBuffer(toDisplay2);
-                    if(sp.length()>0){
-                        sp.deleteCharAt(sp.length()-1);
-                    }
-                    if(sb.length()>51){
-                        sb.deleteCharAt(sb.length()-1);
-                    }
-                    toDisplay=sb.toString();
-                    toDisplay2=sp.toString();
-                }else{
-                    toDisplay=toDisplay.concat(String.valueOf(setterInput));
-                    toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
-                } 
-            }
-            graph.drawString(toDisplay, (int)(50*modifier), (int)(50*modifier));
-            graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
-            setterInput=null;
-            if(setterCounter==5){
-                setter=false;
-            }
-        }
-        else if(guessing){
-            if(setterInput!=null){
-                if((int)setterInput==10){
-                    try{
-                        holder=Integer.parseInt(toDisplay2);
-                    }catch(Exception E){
-                        holderString="invalid input!";
-                        holder=100;
-                    }
-                    //System.out.println(holder);
-                    if(holder<=60 && !guessed[holder]){
-                        guessed[holder] = true;
-                        if(guessAtoms(holder)){
-                            holderString="correct!";
-                            player[playerCounter].incrementScore();
-                            System.out.println("Player score: " + player[playerCounter].getScore());
-                        }else{
-                            holderString="wrong";
+            else if(setter && !guessing){
+                if(setterInput!=null){
+                    if((int)setterInput==10){
+                        holderString = "";
+                        try{
+                            holder=Integer.parseInt(toDisplay2);
+                        }catch(Exception E){
+                            holderString="invalid input!";
+                            holder=100;
                         }
-                        guessCounter++;
+                        //System.out.println(holder);
+                        if(holder<=60 && atomNotAlrThere(holder)){
+                            changeAtoms(holder, setterCounter);
+                            setterCounter++;
+                        }
+                        else holderString="invalid input!";
+
+                        toDisplay="Player " + (((playerCounter+1)%2)+1) + " enter position of atom " + setterCounter + " (and press Enter): ";
+                        toDisplay2="";
+                    }else if((int)setterInput==8){
+                        StringBuffer sb = new StringBuffer(toDisplay);
+                        StringBuffer sp = new StringBuffer(toDisplay2);
+                        if(sp.length()>0){
+                            sp.deleteCharAt(sp.length()-1);
+                        }
+                        if(sb.length()>51){
+                            sb.deleteCharAt(sb.length()-1);
+                        }
+                        toDisplay=sb.toString();
+                        toDisplay2=sp.toString();
+                    }else{
+                        toDisplay=toDisplay.concat(String.valueOf(setterInput));
+                        toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
                     }
-                    toDisplay3="Enter Atom guess " + guessCounter + " (and press Enter): ";
-                    toDisplay2="";
-                }else{
-                    toDisplay3=toDisplay3.concat(String.valueOf(setterInput));
-                    toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
-                } 
+                }
+                graph.drawString(toDisplay, (int)(50*modifier), (int)(50*modifier));
+                graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
+                setterInput=null;
+                if(setterCounter==5){
+                    setter=false;
+                }
+            }
+            else if(guessing){
+                if(setterInput!=null){
+                    if((int)setterInput==10){
+                        try{
+                            holder=Integer.parseInt(toDisplay2);
+                        }catch(Exception E){
+                            holderString="invalid input!";
+                            holder=100;
+                        }
+                        //System.out.println(holder);
+                        if(holder<=60 && !guessed[holder]){
+                            guessed[holder] = true;
+                            if(guessAtoms(holder)){
+                                holderString="correct!";
+                                player[playerCounter].incrementScore();
+                                System.out.println("Player score: " + player[playerCounter].getScore());
+                            }else{
+                                holderString="wrong";
+                            }
+                            guessCounter++;
+                        }
+                        toDisplay3="Enter Atom guess " + guessCounter + " (and press Enter): ";
+                        toDisplay2="";
+                    }else{
+                        toDisplay3=toDisplay3.concat(String.valueOf(setterInput));
+                        toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
+                    }
+                }
+
+                graph.drawString(toDisplay3, (int)(50*modifier), (int)(50*modifier));
+                graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
+                setterInput=null;
+                if(guessCounter==5){
+                    guessed = new boolean[61];
+                    gameOver++;
+                    guessing=false;
+                    setter=true;
+                    playerCounter=1;
+                    lazer2Count=0;
+                    setterCounter=0;
+                    guessCounter=0;
+                    toDisplay="Player 1 enter position of atom 1 (and press Enter): ";
+                    for(int a=starting.size();a>0;a--){
+                        starting.remove(a-1);
+                    }
+                    moveAtoms();
+                }
             }
 
-            graph.drawString(toDisplay3, (int)(50*modifier), (int)(50*modifier));
-            graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
-            setterInput=null;
-            if(guessCounter==5){
-                guessed = new boolean[61];
-                gameOver++;
-                guessing=false;
-                setter=true;
-                playerCounter=1;
-                lazer2Count=0;
-                setterCounter=0;
-                guessCounter=0;
-                toDisplay="Player 1 enter position of atom 1 (and press Enter): ";
-                for(int a=starting.size();a>0;a--){
-                    starting.remove(a-1);
-                }
-                moveAtoms();
+            drawHexagons();
+            drawBorder();
+        }
+
+        else {
+            int lineHeight = graph.getFontMetrics().getHeight();
+            graph.setColor(Color.RED);
+            graph.drawString("GAME OVER", SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+            if(player[0].getScore()>player[1].getScore()) {
+                graph.drawString("Player 1 wins, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
+                graph.drawString("Player 2 loses, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+            }
+            else {
+                graph.drawString("Player 2 wins, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
+                graph.drawString("Player 1 loses, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
             }
         }
 
+    }
+
+    /**
+     * Draws laser ray on board
+     */
+    private void drawRay(LaserRay ray) {
+        graph.setColor(Color.YELLOW);
+        graph.drawOval((int)ray.getMidX()-5, (int)ray.getMidY()-5, 10, 10);
+    }
+
+    /**
+     * Draws hexagons on the board
+     * @implNote Must be called before border drawing
+     * @see #drawBorder()
+     */
+    private void drawHexagons() {
         graph.setColor(Color.pink);
         for(int a=0;a<hexagonCounter2;a++){
             graph.drawPolygon(hex2[a].getXInteger(), hex2[a].getYInteger(), hex2[a].getNumberOfPoints());
             graph.drawString(Integer.toString(a), (int)hex2[a].getMiddleX(), (int)hex2[a].getMiddleY());
         }
+    }
+
+    /**
+     * Draws the border, and its index, around the game board hexagon
+     * @implNote Must be called after hexagon drawing, else border will be painted over
+     * @see #drawHexagons()
+     */
+    private void drawBorder() {
+        /* Border lines */
         graph.setColor(Color.RED);
-        graph.drawPolygon(bored2.getX(), bored2.getY(), bored2.getCountPoints());
-    }else{
-        int lineHeight = graph.getFontMetrics().getHeight();
-        graph.setColor(Color.RED);
-        graph.drawString("GAME OVER", SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-        if(player[0].getScore()>player[1].getScore()){
-            graph.drawString("Player 1 wins, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 2 loses, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
-        }else{
-            graph.drawString("Player 2 wins, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 1 loses, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+        graph.drawPolygon(border.getX(), border.getY(), border.getCountPoints());
+
+        /* Border indexes */
+        for(int i = 0; i < border.getCountPoints(); i++) {
+            graph.setColor(Color.BLUE);
+            if(posPointer == i && !setter) graph.setColor(Color.YELLOW); // Colours player pointer yellow
+
+            graph.drawLine(arr[i].getLineX()[0], arr[i].getLineY()[0], arr[i].getLineX()[1], arr[i].getLineY()[1]);
+            graph.drawString(Integer.toString(i), arr[i].getLineX()[1], arr[i].getLineY()[1]);
         }
     }
 
-    }
     /**
      * Handles user input for moving pointer position.
      * User can use 'A' or 'Left arrow' to move counter-clockwise around grid.
@@ -513,7 +521,6 @@ public class GamePanel extends JPanel implements KeyListener {
      * User can use 'W' or 'Space' to spawn a ray at his current pointer position.
      * @param event event to be processed
      */
-
     @Override
     public void keyReleased(KeyEvent event) {
         /* Ensures user pressed W or space */
@@ -525,7 +532,7 @@ public class GamePanel extends JPanel implements KeyListener {
             }
 
         /* Spawns ray */
-        zipzap.set(arr[posPointer].getLineX()[0], arr[posPointer].getLineY()[0], arr[posPointer].getAngle());
+        laser.set(arr[posPointer].getLineX()[0], arr[posPointer].getLineY()[0], arr[posPointer].getAngle());
         starting.add(posPointer);
         ending.add(0);
         zip = true;
@@ -545,13 +552,12 @@ public class GamePanel extends JPanel implements KeyListener {
         System.out.println((int)setterInput);
     }
 
-
     public void resetGame()
     {
         lazer2Count = 0;
         atoms.clear();
         makeAtomsSetterInput();
-        zipzap = new Lazer(-10, -10, 10, 10);
+        laser = new LaserRay(-10, -10, 10, 10);
     }
 
     public ArrayList<Atom> getAtoms() { return atoms; }

@@ -1,6 +1,5 @@
 package ie.ucd.comp20050.entity;
 import ie.ucd.comp20050.MathUtils;
-import ie.ucd.comp20050.MathUtils.*;
 /*
 This is the new Atom class, which can be used for abstraction.
 Everywhere the Atom's "real" position (X, Y) is needed (e.g., drawing), position can be obtained from the hexagon
@@ -92,13 +91,13 @@ public class Atom {
     }
 
 
-    public double collide(Lazer l, TreeSet<Double> hexxs, TreeSet<Double> hexys)
+    public double collide(LaserRay l, TreeSet<Double> hexxs, TreeSet<Double> hexys)
     {
 double laserradius = l.getRadius();
         double bounce;
         float modifier = 1.0f;
-        double x = l.getX();
-        double y = l.getY();
+        double x = l.getPosX();
+        double y = l.getPosY();
         double oolddir = l.getDirection();
         double o = Math.toRadians(oolddir);
 
@@ -138,9 +137,9 @@ double laserradius = l.getRadius();
         angle = MathUtils.convertToNormal(angle);
         oolddir = MathUtils.convertToNormal(oolddir);
        //if it has absorbed previously multply by 2
-        if (l.getCollideStatus() == Lazer.collideState.absorb ) modifier = 2;
+        if (l.getCollideStatus() == LaserRay.CollideState.absorb ) modifier = 2;
         //it has collide not absorb
-        else if ( l.getCollideStatus() == Lazer.collideState.bounce) modifier = 3;
+        else if ( l.getCollideStatus() == LaserRay.CollideState.bounce) modifier = 3;
 
         //if angle is the same as path the laser is going into the atom
         if (Math.abs(angle - oolddir) <4 )
@@ -148,13 +147,13 @@ double laserradius = l.getRadius();
 
 
             //if already collided multiply previous by 2
-         if ( l.getCollideStatus() == Lazer.collideState.bounce) {
+         if ( l.getCollideStatus() == LaserRay.CollideState.bounce) {
                 return DOUBLE;
             }
             else {
                 bounce = ABSORB;
             }
-            l.setCollideStatus(Lazer.collideState.absorb);
+            l.setCollideStatus(LaserRay.CollideState.absorb);
         }
         else {
             //the bad one collides with atom
@@ -171,7 +170,7 @@ double laserradius = l.getRadius();
 
         //laser has collided with one atom, not absorbed
         if  (bounce != ABSORB)
-            l.setCollideStatus(Lazer.collideState.bounce);
+            l.setCollideStatus(LaserRay.CollideState.bounce);
 
         return bounce * modifier;
     }

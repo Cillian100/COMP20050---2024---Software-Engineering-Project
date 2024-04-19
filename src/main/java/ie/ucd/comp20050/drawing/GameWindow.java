@@ -74,7 +74,7 @@ public class GameWindow extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent event) { //@TODO encapsulate 'zip' and 'zipzap'
         panel.repaint();
-        if(panel.zip) panel.zipzap.move();
+        if(panel.zip) panel.laser.move();
     }
 
     /**
