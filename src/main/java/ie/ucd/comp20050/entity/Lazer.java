@@ -13,7 +13,7 @@ public class Lazer{
 
     private collideState collideStatus = collideState.never;
 
-    public enum collideState {never,bounce ,absorb};
+    public enum collideState {never, bounce, absorb};
 
     public collideState getCollideStatus() {return collideStatus;}
     public void setCollideStatus(collideState x) {collideStatus = x;}
