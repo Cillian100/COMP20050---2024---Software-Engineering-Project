@@ -313,6 +313,12 @@ public class GamePanel extends JPanel implements KeyListener {
         return true;
     }
 
+    /* Temporary method! Using it to test position of laser */
+    private void detectBorder() {
+        System.out.println(laser.getPosX() + " " + laser.getPosY() + " " + laser.getDirection());
+        //System.out.println("Grenze gefunden!");
+    }
+
     /**
      * Primarily handles drawing of game itself, along with other game logic.
      * @param atoms ArrayList<Atom>, atoms to be drawn ~ used
@@ -323,6 +329,7 @@ public class GamePanel extends JPanel implements KeyListener {
             int holder=0;
             //System.out.println("player " + playerCounter);
             collisionDetection();
+            //detectBorder();
 
             if(setter) {
                 drawAtoms(atoms);

@@ -31,12 +31,6 @@ public class LaserRay {
 
     private double angle;
 
-    private double hold;
-
-    private double cos;
-
-    private double sin;
-
     /**
      * Constructor
      * @param inputX int, starting X position of the ray
@@ -68,8 +62,8 @@ public class LaserRay {
     }
 
     public void move() {
-        posX = posX - (cos * 20);
-        posY = posY + (sin * 20);
+        posX = posX - ( (Math.cos(Math.toRadians(angle))) * 20);
+        posY = posY + ( (Math.sin(Math.toRadians(angle))) * 20);
     }
 
     public void stop() {
@@ -81,9 +75,6 @@ public class LaserRay {
         posX = inputX;
         posY = inputY;
         angle = inputAngle;
-        hold = Math.toRadians(angle);
-        cos = Math.cos(hold);
-        sin = Math.sin(hold);
     }
 
     public double getDirection() {
@@ -92,9 +83,6 @@ public class LaserRay {
 
     public void changeDirection(double inputAngle) {
         angle = inputAngle;
-        hold = Math.toRadians(angle);
-        cos = Math.cos(hold);
-        sin = Math.sin(hold);
     }
 
     public void addBounce(double modifier) {
