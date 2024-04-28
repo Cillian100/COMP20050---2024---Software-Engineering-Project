@@ -13,6 +13,12 @@ public class Player{
 
     public void incrementScore(){
         score++;
-        return;
     }
+
+    public void add5ToScore()
+    {
+        score += 5;
+    }
+
+
 }

@@ -1,6 +1,6 @@
 package ie.ucd.comp20050;
 
-public class Hexagon2 {
+public class Hexagon {
     private double a=60;
     private double b = Math.toRadians(a);
     private double sinSixty=Math.sin(b);
@@ -14,7 +14,7 @@ public class Hexagon2 {
     private int yInt[] = new int[10];
     private double modifier;
 
-    public Hexagon2(double apple, double banana, double cranberry, int calibrate){
+    public Hexagon(double apple, double banana, double cranberry, int calibrate){
         x2[0]=apple;
         y2[0]=banana;
         modifier=cranberry;

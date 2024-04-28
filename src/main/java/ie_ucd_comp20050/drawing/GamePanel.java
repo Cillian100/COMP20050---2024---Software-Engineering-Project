@@ -13,15 +13,15 @@ public class GamePanel extends JPanel implements KeyListener {
     int x[];
     int y[];
     int counter;
-    Hexagon2[] hex2 = new Hexagon2[100];
+    Hexagon[] hexagons = new Hexagon[100];
     Arrow[] arr = new Arrow[100];
     LaserRay laser = new LaserRay(-10, -10, 10, 10);
     Border border;
     int hexagonCounter=0, hexagonCounter2=0;
     int posPointer = 0;
     boolean zip=false;
-    Random random = new Random(); // @TODO Deprecate
-    int lazer2Count =0;
+    Random random = new Random();
+    int laserCount =0;
     boolean setter=true;
     Character setterInput;
     String toDisplay="Player 2 enter position of atom 1 (and press Enter): ";
@@ -50,7 +50,6 @@ public class GamePanel extends JPanel implements KeyListener {
     TreeSet<Double> hexxs;
     TreeSet<Double> hexys;
 
-    PlayerInteractions playerhandler;
 
     Player[] player = new Player[2];
 
@@ -81,11 +80,12 @@ public class GamePanel extends JPanel implements KeyListener {
         this.addKeyListener(this);
         player[0] = new Player(0);
         player[1] = new Player(0);
-        calculateGridInADifferentWay();
-        border = new Border(hex2);
+        calculateGrid();
+        border = new Border(hexagons);
         calculateArrows();
         if(userGenerated){
-            makeAtomsSetterInput();
+            //makeAtomsSetterInput();
+            makeAtoms();
         }else{
             makeAtoms();
         }
@@ -111,8 +111,8 @@ public class GamePanel extends JPanel implements KeyListener {
         //Integer input = myObj.nextInt();
         for(int a=0;a<atomnum;a++){
         atoms.add(new Atom(
-                hex2[0].getMiddleX(),
-                hex2[0].getMiddleY(),
+                hexagons[0].getMiddleX(),
+                hexagons[0].getMiddleY(),
                 atomRadius,
                 ringRadius,
                 hexagondistance
@@ -123,8 +123,8 @@ public class GamePanel extends JPanel implements KeyListener {
 
     private void changeAtoms(int hexagon, int counter){
         atoms.get(setterCounter).change(
-            hex2[hexagon].getMiddleX(),
-            hex2[hexagon].getMiddleY(),
+            hexagons[hexagon].getMiddleX(),
+            hexagons[hexagon].getMiddleY(),
             hexagon);
     }
 
@@ -132,7 +132,7 @@ public class GamePanel extends JPanel implements KeyListener {
      {  
          boolean already[] = new boolean[100];
          atoms = new ArrayList<Atom>();
-         Random random = new Random();
+//         Random random = new Random();
         int hex = 0;
          for(int i = 0; i < atomnum; i++) {
              while (already[hex])
@@ -141,8 +141,8 @@ public class GamePanel extends JPanel implements KeyListener {
              }
              already[hex] = true;
              atoms.add(new Atom(
-                     hex2[hex].getMiddleX(),
-                     hex2[hex].getMiddleY(),
+                     hexagons[hex].getMiddleX(),
+                     hexagons[hex].getMiddleY(),
                      atomRadius,
                      ringRadius,
                      hexagondistance
@@ -168,10 +168,10 @@ public class GamePanel extends JPanel implements KeyListener {
     is there ever a realistic scenario where this should be dynamic?
     Monopoly is always the same board size, I would imagine this game is much the same (I don't know it that well).
      */
-    private void calculateGridInADifferentWay(){
+    private void calculateGrid(){
         yConstant=(int)(SCREEN_WIDTH/2 - 50 * modifier);
         xConstant=(int)(SCREEN_WIDTH/2 - 87 * modifier);
-        hex2[hexagonCounter2] = new Hexagon2(xConstant, yConstant, modifier, 60);
+        hexagons[hexagonCounter2] = new Hexagon(xConstant, yConstant, modifier, 60);
         hexagonCounter2++;
         int angle=180;
         int flip=1;
@@ -180,21 +180,20 @@ public class GamePanel extends JPanel implements KeyListener {
 
 
         for(int a=0;a<6;a++){
-            hex2[hexagonCounter2] = new Hexagon2(hex2[0].getX()[a], hex2[0].getY()[a], modifier, angle);
+            hexagons[hexagonCounter2] = new Hexagon(hexagons[0].getX()[a], hexagons[0].getY()[a], modifier, angle);
             hexagonCounter2++;
             angle=angle+60;
             angle=angle%360;
         }
         layer2++;
 
-        System.out.println(flip);
         for(int c=0;c<3;c++){
             for(int b=0;b<6;b++){
                 for(int a=0;a<layer2;a++){
                     if(b+a==5+layer2-1){
-                        hex2[hexagonCounter2] = new Hexagon2(hex2[flip2].getX()[b], hex2[flip2].getY()[b], modifier, angle);
+                        hexagons[hexagonCounter2] = new Hexagon(hexagons[flip2].getX()[b], hexagons[flip2].getY()[b], modifier, angle);
                     }else{
-                        hex2[hexagonCounter2] = new Hexagon2(hex2[flip+a].getX()[b], hex2[flip+a].getY()[b], modifier, angle);
+                        hexagons[hexagonCounter2] = new Hexagon(hexagons[flip+a].getX()[b], hexagons[flip+a].getY()[b], modifier, angle);
                     }
                     hexagonCounter2++;
                 }
@@ -208,13 +207,13 @@ public class GamePanel extends JPanel implements KeyListener {
 
         hexxs = new TreeSet<Double>();
         hexys = new TreeSet<Double>();
-        for (Hexagon2 hex:hex2)
+        for (Hexagon hex:hexagons)
         {
             if (hex == null ) continue;
             hexxs.add(hex.getMiddleX());
             hexys.add(hex.getMiddleY());
         }
-        hexagondistance  = Math.abs(hex2[1].getMiddleX() - hex2[0].getMiddleY());
+        hexagondistance  = Math.abs(hexagons[1].getMiddleX() - hexagons[0].getMiddleY());
     }
 
     private void calculateArrows(){
@@ -235,8 +234,8 @@ public class GamePanel extends JPanel implements KeyListener {
         if(list == null) return; // Temp. necessary to alleviate bug on macOS @TODO Better explanation
         graph.setColor(Color.blue);
         for(Atom atom : list) {
-            int posX = (int) hex2[atom.getHexagon()].getMiddleX();
-            int posY = (int) hex2[atom.getHexagon()].getMiddleY();
+            int posX = (int) hexagons[atom.getHexagon()].getMiddleX();
+            int posY = (int) hexagons[atom.getHexagon()].getMiddleY();
             int size =(int) (175 * modifier);
 
             graph.fillOval(posX - size/2, posY - size/2, size, size);
@@ -316,7 +315,6 @@ public class GamePanel extends JPanel implements KeyListener {
     /* Temporary method! Using it to test position of laser */
     private void detectBorder() {
         System.out.println(laser.getPosX() + " " + laser.getPosY() + " " + laser.getDirection());
-        //System.out.println("Grenze gefunden!");
     }
 
     /**
@@ -326,141 +324,64 @@ public class GamePanel extends JPanel implements KeyListener {
     private void drawBackground(ArrayList<Atom> atoms) {
         if(gameOver!=2) {
 
-            int holder=0;
-            //System.out.println("player " + playerCounter);
             collisionDetection();
-            //detectBorder();
-
             if(setter) {
-                drawAtoms(atoms);
                 drawRay(laser);
             }
-            //drawRay(laser); // FOR DEBUGGING! @TODO Comment out!!!
+
+            drawAtoms(atoms);
 
             graph.setColor(Color.red); // Unsure what this is colouring!
-            if(lazer2Count>=10) guessing=true;
 
-            if(!setter && !guessing) {
-                String startingPositions = "Atom starting & ending positions:\n";
-                graph.drawString("Player 1: Press a and d to move. Press and release w to shoot.", (int)(50*modifier), (int)(50*modifier));
-                graph.drawString("Number of lazers left:" + Integer.toString(10-lazer2Count), (int)(25*modifier), (int)(100*modifier));
-                int why=(int)(1500*modifier);
-                int lineHeight = graph.getFontMetrics().getHeight();
-                graph.drawString(startingPositions, (int)(1400*modifier), why);
-                for(int a=0;a<starting.size();a++)
-                    graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + "todo", (int)(1400*modifier), why+=lineHeight);
-                setterInput=null;
+            if(guessing) {
+                getGuesses();
             }
-            else if(setter && !guessing){
-                if(setterInput!=null){
-                    if((int)setterInput==10){
-                        holderString = "";
-                        try{
-                            holder=Integer.parseInt(toDisplay2);
-                        }catch(Exception E){
-                            holderString="invalid input!";
-                            holder=100;
-                        }
-                        //System.out.println(holder);
-                        if(holder<=60 && atomNotAlrThere(holder)){
-                            changeAtoms(holder, setterCounter);
-                            setterCounter++;
-                        }
-                        else holderString="invalid input!";
-
-                        toDisplay="Player " + (((playerCounter+1)%2)+1) + " enter position of atom " + setterCounter + " (and press Enter): ";
-                        toDisplay2="";
-                    }else if((int)setterInput==8){
-                        StringBuffer sb = new StringBuffer(toDisplay);
-                        StringBuffer sp = new StringBuffer(toDisplay2);
-                        if(sp.length()>0){
-                            sp.deleteCharAt(sp.length()-1);
-                        }
-                        if(sb.length()>51){
-                            sb.deleteCharAt(sb.length()-1);
-                        }
-                        toDisplay=sb.toString();
-                        toDisplay2=sp.toString();
-                    }else{
-                        toDisplay=toDisplay.concat(String.valueOf(setterInput));
-                        toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
-                    }
-                }
-                graph.drawString(toDisplay, (int)(50*modifier), (int)(50*modifier));
-                graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
-                setterInput=null;
-                if(setterCounter==5){
-                    setter=false;
-                }
+            else {
+                drawPlayerGameplayInfo();
             }
-            else if(guessing){
-                if(setterInput!=null){
-                    if((int)setterInput==10){
-                        try{
-                            holder=Integer.parseInt(toDisplay2);
-                        }catch(Exception E){
-                            holderString="invalid input!";
-                            holder=100;
-                        }
-                        //System.out.println(holder);
-                        if(holder<=60 && !guessed[holder]){
-                            guessed[holder] = true;
-                            if(guessAtoms(holder)){
-                                holderString="correct!";
-                                player[playerCounter].incrementScore();
-                                System.out.println("Player score: " + player[playerCounter].getScore());
-                            }else{
-                                holderString="wrong";
-                            }
-                            guessCounter++;
-                        }
-                        toDisplay3="Enter Atom guess " + guessCounter + " (and press Enter): ";
-                        toDisplay2="";
-                    }else{
-                        toDisplay3=toDisplay3.concat(String.valueOf(setterInput));
-                        toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
-                    }
-                }
-
-                graph.drawString(toDisplay3, (int)(50*modifier), (int)(50*modifier));
-                graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
-                setterInput=null;
-                if(guessCounter==5){
-                    guessed = new boolean[61];
-                    gameOver++;
-                    guessing=false;
-                    setter=true;
-                    playerCounter=1;
-                    lazer2Count=0;
-                    setterCounter=0;
-                    guessCounter=0;
-                    toDisplay="Player 1 enter position of atom 1 (and press Enter): ";
-                    for(int a=starting.size();a>0;a--){
-                        starting.remove(a-1);
-                    }
-                    moveAtoms();
-                }
-            }
-
             drawHexagons();
             drawBorder();
         }
-
         else {
-            int lineHeight = graph.getFontMetrics().getHeight();
-            graph.setColor(Color.RED);
-            graph.drawString("GAME OVER", SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-            if(player[0].getScore()>player[1].getScore()) {
-                graph.drawString("Player 1 wins, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
-                graph.drawString("Player 2 loses, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
-            }
-            else {
-                graph.drawString("Player 2 wins, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
-                graph.drawString("Player 1 loses, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
-            }
+            displayEndScreen();
         }
-
     }
+
+    void displayEndScreen() {
+
+        int lineHeight = graph.getFontMetrics().getHeight();
+        graph.setColor(Color.RED);
+        graph.drawString("GAME OVER", SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        if (player[1].getScore() == player[0].getScore())
+        {
+            graph.drawString("Draw!" + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 1 score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight* 2);
+            graph.drawString("Player 2 score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight* 3);
+        }
+        else if(player[0].getScore()<player[1].getScore()) {
+            graph.drawString("Player 1 wins, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 2 loses, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+        }
+        else {
+            graph.drawString("Player 2 wins, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 1 loses, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+        }
+    }
+
+    void drawPlayerGameplayInfo()
+    {
+
+        String startingPositions = "Atom starting & ending positions:\n";
+        graph.drawString("Player " + (playerCounter +1) +  ": Press a and d to move. Press and release w to shoot,press and release g to guess", (int)(50*modifier), (int)(50*modifier));
+        graph.drawString("lasers shot: " + laserCount, (int)(25*modifier), (int)(100*modifier));
+        int why=(int)(1500*modifier);
+        int lineHeight = graph.getFontMetrics().getHeight();
+        graph.drawString(startingPositions, (int)(1400*modifier), why);
+        for(int a=starting.size() - 1;a >= 0;a--)
+            graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + "todo", (int)(1400*modifier), why+=lineHeight);
+        setterInput=null;
+    }
+
 
     /**
      * Draws laser ray on board
@@ -468,6 +389,57 @@ public class GamePanel extends JPanel implements KeyListener {
     private void drawRay(LaserRay ray) {
         graph.setColor(Color.YELLOW);
         graph.drawOval((int)ray.getMidX()-5, (int)ray.getMidY()-5, 10, 10);
+    }
+
+    void getGuesses()
+    {
+
+
+int holder;
+        if(setterInput!=null){
+
+            if((int)setterInput==10){
+                try{
+                    holder=Integer.parseInt(toDisplay2);
+                }catch(Exception E){
+                    holderString="invalid input!";
+                    holder=100;
+                }
+
+                if(holder<=60 && !guessed[holder]){
+                    guessed[holder] = true;
+                    if(guessAtoms(holder)){
+                        holderString="correct!";
+                    }else{
+                        holderString="wrong";
+                        player[playerCounter].add5ToScore();
+                    }
+                    guessCounter++;
+                }
+                toDisplay3="Enter Atom guess " + (guessCounter + 1) + " (and press Enter): ";
+                toDisplay2="";
+            }else{
+                toDisplay3=toDisplay3.concat(String.valueOf(setterInput));
+                toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
+            }
+        }
+
+        graph.drawString(toDisplay3, (int)(50*modifier), (int)(50*modifier));
+        graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
+        setterInput=null;
+        if(guessCounter==5){
+            guessed = new boolean[61];
+            gameOver++;
+            guessing=false;
+            playerCounter=1;
+            laserCount=0;
+            guessCounter=0;
+            toDisplay3="Enter Atom guess 1 (and press Enter): ";
+            makeAtoms();
+            for(int a=starting.size();a>0;a--){
+                starting.remove(a-1);
+            }
+        }
     }
 
     /**
@@ -478,8 +450,8 @@ public class GamePanel extends JPanel implements KeyListener {
     private void drawHexagons() {
         graph.setColor(Color.pink);
         for(int a=0;a<hexagonCounter2;a++){
-            graph.drawPolygon(hex2[a].getXInteger(), hex2[a].getYInteger(), hex2[a].getNumberOfPoints());
-            graph.drawString(Integer.toString(a), (int)hex2[a].getMiddleX(), (int)hex2[a].getMiddleY());
+            graph.drawPolygon(hexagons[a].getXInteger(), hexagons[a].getYInteger(), hexagons[a].getNumberOfPoints());
+            graph.drawString(Integer.toString(a), (int)hexagons[a].getMiddleX(), (int)hexagons[a].getMiddleY());
         }
     }
 
@@ -534,17 +506,19 @@ public class GamePanel extends JPanel implements KeyListener {
         if(!setter && !guessing){
             switch(event.getKeyCode()) {
                 case KeyEvent.VK_W, KeyEvent.VK_SPACE -> System.out.println("Ray Spawned");
-                case KeyEvent.VK_G -> {playerhandler.endTurn(lazer2Count); return;}
+//                case KeyEvent.VK_G -> {playerhandler.endTurn(laserCount); return;}
+                case KeyEvent.VK_G ->{ guessing = true; return;}
                 default -> { return; }
             }
 
         /* Spawns ray */
         laser.set(arr[posPointer].getLineX()[0], arr[posPointer].getLineY()[0], arr[posPointer].getAngle());
         starting.add(posPointer);
+
         ending.add(0);
         zip = true;
-        lazer2Count++;
-        System.out.println("lazer2Count: " + lazer2Count);
+        player[playerCounter].incrementScore();
+        laserCount++;
     }
 
        //reset atom collisions
@@ -556,12 +530,11 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyTyped(KeyEvent e){ 
         setterInput = e.getKeyChar();
-        System.out.println((int)setterInput);
     }
 
     public void resetGame()
     {
-        lazer2Count = 0;
+        laserCount = 0;
         atoms.clear();
         makeAtomsSetterInput();
         laser = new LaserRay(-10, -10, 10, 10);

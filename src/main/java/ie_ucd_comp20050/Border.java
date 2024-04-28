@@ -23,9 +23,9 @@ public class Border { // @TODO Refactor using streamlined data structure
      * There are 24 'border hexagons', counting from hexagon 37 to hexagon 60
      * Border combines sides of each border hexagon which has no neighbour hexagon
      *
-     * @param hexagons Hexagon2[], array of board's hexagons
+     * @param hexagons Hexagon[], array of board's hexagons
      */
-    public Border(Hexagon2[] hexagons) {
+    public Border(Hexagon[] hexagons) {
         for(int i = 0, position = 37; i < 6; i ++, position--, countPoints--) { // Loops board hexagon's 6 sides
             for(int j = 0; j < 5; j++, position++) { // Loops hexagons per side, for which there are 5
                 if(position == 61) position = 37; // Wrap around
