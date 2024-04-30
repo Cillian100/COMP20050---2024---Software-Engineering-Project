@@ -1,4 +1,4 @@
-package ie.ucd.comp20050;
+package ie_ucd_comp20050;
 
 import java.lang.ref.Reference;
 import java.util.TreeSet;

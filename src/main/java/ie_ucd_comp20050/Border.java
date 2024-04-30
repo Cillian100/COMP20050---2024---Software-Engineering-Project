@@ -1,4 +1,4 @@
-package ie.ucd.comp20050;
+package ie_ucd_comp20050;
 
 public class Border { // @TODO Refactor using streamlined data structure
 
@@ -32,6 +32,7 @@ public class Border { // @TODO Refactor using streamlined data structure
 
                 // Collects 'top middle' point of border hexagon (facing out)
                 x[countPoints] = (int) hexagons[position].getX()[i];
+                System.out.println(position +" " +  hexagons[position].getX()[i] + " " + hexagons[position].getY()[i] + " " + countPoints);
                 y[countPoints] = (int) hexagons[position].getY()[i];
                 countPoints++;
 

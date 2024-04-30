@@ -1,5 +1,5 @@
 package ie.ucd.comp20050;
-
+import ie_ucd_comp20050.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

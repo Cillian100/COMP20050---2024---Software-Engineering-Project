@@ -1,6 +1,6 @@
-package ie.ucd.comp20050.drawing;
+package ie_ucd_comp20050.drawing;
 
-import ie.ucd.comp20050.entity.Atom;
+import ie_ucd_comp20050.entity.Atom;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,7 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import static ie.ucd.comp20050.MathUtils.calculateWindowModifier;
+import static ie_ucd_comp20050.MathUtils.calculateWindowModifier;
 
 /*
 This class will contain the APIs for interacting with the game's window.

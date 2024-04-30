@@ -1,7 +1,7 @@
 package ie.ucd.comp20050;
 
-import ie.ucd.comp20050.entity.Atom;
-import ie.ucd.comp20050.entity.LaserRay;
+import ie_ucd_comp20050.entity.Atom;
+import ie_ucd_comp20050.entity.LaserRay;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

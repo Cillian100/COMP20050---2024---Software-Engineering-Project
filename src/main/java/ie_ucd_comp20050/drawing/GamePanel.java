@@ -1,4 +1,4 @@
-package ie.ucd.comp20050.drawing;
+package ie_ucd_comp20050.drawing;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,8 +6,8 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeSet;
-import ie.ucd.comp20050.*;
-import ie.ucd.comp20050.entity.*;
+import ie_ucd_comp20050.*;
+import ie_ucd_comp20050.entity.*;
 
 public class GamePanel extends JPanel implements KeyListener {
     int x[];
@@ -327,9 +327,9 @@ public class GamePanel extends JPanel implements KeyListener {
             collisionDetection();
             if(setter) {
                 drawRay(laser);
+                drawAtoms(atoms);
             }
 
-            drawAtoms(atoms);
 
             graph.setColor(Color.red); // Unsure what this is colouring!
 

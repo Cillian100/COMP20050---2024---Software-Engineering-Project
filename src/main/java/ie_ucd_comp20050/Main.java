@@ -1,7 +1,7 @@
-package ie.ucd.comp20050;
+package ie_ucd_comp20050;
 
-import ie.ucd.comp20050.drawing.GameWindow;
-import ie.ucd.comp20050.entity.Atom;
+import ie_ucd_comp20050.drawing.GameWindow;
+import ie_ucd_comp20050.entity.Atom;
 
 import java.util.ArrayList;
 

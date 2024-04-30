@@ -1,5 +1,5 @@
-package ie.ucd.comp20050.entity;
-import ie.ucd.comp20050.MathUtils;
+package ie_ucd_comp20050.entity;
+import ie_ucd_comp20050.MathUtils;
 /*
 This is the new Atom class, which can be used for abstraction.
 Everywhere the Atom's "real" position (X, Y) is needed (e.g., drawing), position can be obtained from the hexagon
