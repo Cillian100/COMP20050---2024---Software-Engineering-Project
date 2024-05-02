@@ -348,23 +348,40 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     void displayEndScreen() {
-
+        graph.setFont(new Font("TimesRoman", Font.PLAIN, (int)(100*modifier))); 
         int lineHeight = graph.getFontMetrics().getHeight();
         graph.setColor(Color.RED);
-        graph.drawString("GAME OVER", SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        //game over box
+        graph.drawRect((int)(100*modifier), (int)(100*modifier), (int)(SCREEN_WIDTH-(200*modifier)), (int)(SCREEN_HEIGHT*0.3));
+        int x=(int)(100*modifier);
+        int y=(int)(150*modifier)+(int)(SCREEN_HEIGHT*0.3);
+        graph.drawRect(x, y,(int)(SCREEN_WIDTH-(200*modifier)), (int)(SCREEN_HEIGHT*0.5));
+        graph.drawString("GAME OVER", (int)(SCREEN_WIDTH/2-(300*modifier)), (int)((100*modifier)+(SCREEN_HEIGHT*0.3)/2));
+        int textPosition;
         if (player[1].getScore() == player[0].getScore())
         {
-            graph.drawString("Draw!" + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 1 score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight* 2);
-            graph.drawString("Player 2 score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight* 3);
+            textPosition=(int)(SCREEN_WIDTH/2-(400*modifier));
+            graph.drawString("Draw!" + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 1 score = " + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight* 2);
+            graph.drawString("Player 2 score = " + player[1].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight* 3);
         }
         else if(player[0].getScore()<player[1].getScore()) {
-            graph.drawString("Player 1 wins, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 2 loses, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+            textPosition=(int)(SCREEN_WIDTH/2-(600*modifier));
+            graph.drawString("Player 1 wins, score = " + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 2 loses, score = " + player[1].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight*2);
         }
         else {
-            graph.drawString("Player 2 wins, score = " + player[1].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 1 loses, score = " + player[0].getScore(), SCREEN_WIDTH/2, SCREEN_HEIGHT/2 + lineHeight*2);
+            textPosition=(int)(SCREEN_WIDTH/2-(600*modifier));
+            graph.drawString("Player 2 wins, score = " + player[1].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight);
+            graph.drawString("Player 1 loses, score = " + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight*2);
+        }
+
+        graph.drawString("Press g to exit game", textPosition, SCREEN_HEIGHT/2 + lineHeight*5);
+
+        if(setterInput!=null){
+            if(setterInput=='g'){
+                System.exit(0);
+            }
         }
     }
 
