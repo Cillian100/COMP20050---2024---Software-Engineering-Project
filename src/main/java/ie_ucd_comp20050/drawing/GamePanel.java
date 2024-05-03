@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.TreeSet;
 import ie_ucd_comp20050.*;
@@ -35,6 +36,8 @@ public class GamePanel extends JPanel implements KeyListener {
     boolean userGenerated=true;
     boolean guessing=false;
     int gameOver=0;
+    ArrayList<Integer> enterAndExit = new ArrayList<Integer>();
+    boolean round=false;
 
     /* LEGACY VARS */
     double modifier;
@@ -133,7 +136,7 @@ public class GamePanel extends JPanel implements KeyListener {
          boolean already[] = new boolean[100];
          atoms = new ArrayList<Atom>();
 //         Random random = new Random();
-        int hex = 0;
+        int hex = random.nextInt(hexagonCounter2);
          for(int i = 0; i < atomnum; i++) {
              while (already[hex])
              {
@@ -245,6 +248,29 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
+    public int borderDetection(int a){
+        int a2;
+        if(a==53){
+            a2=0;
+        }else{
+            a2=a+1;
+        }
+        double x1 = border.getX()[a];
+        double x2 = border.getX()[a2];
+        double y1 = border.getY()[a];
+        double y2 = border.getY()[a2];
+        double px = laser.getMidX();
+        double py = laser.getMidY();
+        double len1=MathUtils.distance(x1, y1, px, py);
+        double len2=MathUtils.distance(x2, y2, px, py);
+        double len3=MathUtils.distance(x1, y1, x2, y2);
+        //System.out.println(border.getX()[43] + " " + border.getX()[44]);
+        if((len1+len2-len3) < 25){
+            return a;
+        }
+        return 100;
+    }
+
     /**
      * Method to handle collision detection with atoms
      */
@@ -277,7 +303,10 @@ public class GamePanel extends JPanel implements KeyListener {
                 break;
            }
         }
-        if (bounce == Atom.ABSORB) zip = false;
+        if (bounce == Atom.ABSORB){
+            ending.add(100);
+            zip = false;
+        }
         //if it has collided and not at edge centre
         double x = MathUtils.closestValue(laser.getPosX(),hexxs);
         double y = MathUtils.closestValue(laser.getPosY(),hexys);
@@ -292,6 +321,20 @@ public class GamePanel extends JPanel implements KeyListener {
 
         laser.setCollideStatus(LaserRay.CollideState.never);
         laser.addBounce(bounce);
+
+        for(int a=0;a<54;a++){
+            int result=borderDetection(a);
+            if(result!=100){
+                enterAndExit.add(result);
+                System.out.println(enterAndExit);
+                if(enterAndExit.size()>2){
+                    round=true;
+                }else{
+                    round=false;
+                }
+                System.out.println(round);
+            }
+        }
     }
 
     private boolean guessAtoms(int answer) {
@@ -301,9 +344,9 @@ public class GamePanel extends JPanel implements KeyListener {
         return false;
     }
 
-    private void moveAtoms() {
+    private void moveAtoms(int a) {
         for(int i = 0; i < atomnum; i++)
-            atoms.get(i).change(100, 100, 0);
+            atoms.get(i).change(100, 100, a);
     }
 
     private boolean atomNotAlrThere(int x) {
@@ -323,13 +366,18 @@ public class GamePanel extends JPanel implements KeyListener {
      */
     private void drawBackground(ArrayList<Atom> atoms) {
         if(gameOver!=2) {
-
+            //moveAtoms(41);
+            if(round==true){
+                round=false;
+                ending.add(enterAndExit.get(2));
+                //starting.add(enterAndExit.get(0));
+                enterAndExit.clear();
+            }
             collisionDetection();
             if(setter) {
                 drawRay(laser);
                 drawAtoms(atoms);
             }
-
 
             graph.setColor(Color.red); // Unsure what this is colouring!
 
@@ -385,17 +433,20 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-    void drawPlayerGameplayInfo()
-    {
-
+    void drawPlayerGameplayInfo(){
         String startingPositions = "Atom starting & ending positions:\n";
         graph.drawString("Player " + (playerCounter +1) +  ": Press a and d to move. Press and release w to shoot,press and release g to guess", (int)(50*modifier), (int)(50*modifier));
         graph.drawString("lasers shot: " + laserCount, (int)(25*modifier), (int)(100*modifier));
         int why=(int)(1500*modifier);
         int lineHeight = graph.getFontMetrics().getHeight();
         graph.drawString(startingPositions, (int)(1400*modifier), why);
-        for(int a=starting.size() - 1;a >= 0;a--)
-            graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + "todo", (int)(1400*modifier), why+=lineHeight);
+        for(int a=ending.size() - 1;a >= 0;a--){
+            if(ending.get(a)==100){
+                graph.drawString("starting: " + starting.get(a).toString() + "    ending: absorbed", (int)(1400*modifier), why+=lineHeight);
+            }else{
+                graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + ending.get(a), (int)(1400*modifier), why+=lineHeight);
+            }
+        }
         setterInput=null;
     }
 
@@ -408,13 +459,9 @@ public class GamePanel extends JPanel implements KeyListener {
         graph.drawOval((int)ray.getMidX()-5, (int)ray.getMidY()-5, 10, 10);
     }
 
-    void getGuesses()
-    {
-
-
-int holder;
+    void getGuesses(){
+        int holder;
         if(setterInput!=null){
-
             if((int)setterInput==10){
                 try{
                     holder=Integer.parseInt(toDisplay2);
@@ -490,6 +537,9 @@ int holder;
             graph.drawLine(arr[i].getLineX()[0], arr[i].getLineY()[0], arr[i].getLineX()[1], arr[i].getLineY()[1]);
             graph.drawString(Integer.toString(i), arr[i].getLineX()[1], arr[i].getLineY()[1]);
         }
+
+        //temerary for testing
+        //graph.drawLine(border.getASpecificX(43), border.getASpecificY(43), border.getASpecificX(44), border.getASpecificY(44));
     }
 
     /**
@@ -531,8 +581,7 @@ int holder;
         /* Spawns ray */
         laser.set(arr[posPointer].getLineX()[0], arr[posPointer].getLineY()[0], arr[posPointer].getAngle());
         starting.add(posPointer);
-
-        ending.add(0);
+        enterAndExit.clear();
         zip = true;
         player[playerCounter].incrementScore();
         laserCount++;

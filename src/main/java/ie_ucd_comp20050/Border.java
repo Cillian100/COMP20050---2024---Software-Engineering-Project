@@ -51,6 +51,12 @@ public class Border { // @TODO Refactor using streamlined data structure
     public int[] getX() {
         return x;
     }
+    public int getASpecificX(int a){
+        return x[a];
+    }   
+    public int getASpecificY(int a){
+        return y[a];
+    }
 
     /**
      * Method to obtain Y coordinates of all points
