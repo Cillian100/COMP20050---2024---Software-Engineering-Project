@@ -1,14 +1,21 @@
-package ie_ucd_comp20050.drawing;
+package ie.ucd.comp20050.drawing;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.TreeSet;
-import ie_ucd_comp20050.*;
-import ie_ucd_comp20050.entity.*;
+
+import ie.ucd.comp20050.MathUtils;
+import ie.ucd.comp20050.entity.Atom;
+import ie.ucd.comp20050.entity.LaserRay;
+import ie.ucd.comp20050.entity.Player;
+import ie.ucd.comp20050.*;
+import ie.ucd.comp20050.component.Arrow;
+import ie.ucd.comp20050.component.Border;
+import ie.ucd.comp20050.component.Hexagon;
+import ie.ucd.comp20050.entity.*;
 
 public class GamePanel extends JPanel implements KeyListener {
     int x[];
@@ -261,9 +268,9 @@ public class GamePanel extends JPanel implements KeyListener {
         double y2 = border.getY()[a2];
         double px = laser.getMidX();
         double py = laser.getMidY();
-        double len1=MathUtils.distance(x1, y1, px, py);
-        double len2=MathUtils.distance(x2, y2, px, py);
-        double len3=MathUtils.distance(x1, y1, x2, y2);
+        double len1= MathUtils.pointsDistance(x1, y1, px, py);
+        double len2=MathUtils.pointsDistance(x2, y2, px, py);
+        double len3=MathUtils.pointsDistance(x1, y1, x2, y2);
         //System.out.println(border.getX()[43] + " " + border.getX()[44]);
         if((len1+len2-len3) < 25){
             return a;
@@ -288,7 +295,7 @@ public class GamePanel extends JPanel implements KeyListener {
             else if (tmp == Atom.EXIT_ABSORB) {
                 //to avoid overlapping radii
                 for (;a< atomnum;a++)
-                    atoms.get(a).setCollideTrue();
+                    atoms.get(a).setCollideStatus(true);
                 zip = false; break;
             }
             else if (tmp == Atom.EXIT_180) //this overpowers everything excpet for absorb at edge
@@ -310,7 +317,7 @@ public class GamePanel extends JPanel implements KeyListener {
         //if it has collided and not at edge centre
         double x = MathUtils.closestValue(laser.getPosX(),hexxs);
         double y = MathUtils.closestValue(laser.getPosY(),hexys);
-        if (MathUtils.squ(x - laser.getPosX()) + MathUtils.squ(y - laser.getPosY()) > MathUtils.squ( hexagondistance))
+        if (MathUtils.squareDouble(x - laser.getPosX()) + MathUtils.squareDouble(y - laser.getPosY()) > MathUtils.squareDouble( hexagondistance))
         {
             zip = false;
         }
@@ -355,11 +362,6 @@ public class GamePanel extends JPanel implements KeyListener {
         return true;
     }
 
-    /* Temporary method! Using it to test position of laser */
-    private void detectBorder() {
-        System.out.println(laser.getPosX() + " " + laser.getPosY() + " " + laser.getDirection());
-    }
-
     /**
      * Primarily handles drawing of game itself, along with other game logic.
      * @param atoms ArrayList<Atom>, atoms to be drawn ~ used
@@ -367,7 +369,7 @@ public class GamePanel extends JPanel implements KeyListener {
     private void drawBackground(ArrayList<Atom> atoms) {
         if(gameOver!=2) {
             //moveAtoms(41);
-            if(round==true){
+            if(round){
                 round=false;
                 ending.add(enterAndExit.get(2));
                 //starting.add(enterAndExit.get(0));
@@ -378,6 +380,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 drawRay(laser);
                 drawAtoms(atoms);
             }
+            //drawRay(laser);
 
             graph.setColor(Color.red); // Unsure what this is colouring!
 
@@ -589,7 +592,7 @@ public class GamePanel extends JPanel implements KeyListener {
 
        //reset atom collisions
         for (Atom atom:atoms)
-            atom.resetCollisionStatus();
+            atom.setCollideStatus(false);
 
     }
 

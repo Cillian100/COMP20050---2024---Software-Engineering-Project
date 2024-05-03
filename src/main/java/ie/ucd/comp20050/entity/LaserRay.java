@@ -1,4 +1,4 @@
-package ie_ucd_comp20050.entity;
+package ie.ucd.comp20050.entity;
 
 /**
  * Laser Ray entity

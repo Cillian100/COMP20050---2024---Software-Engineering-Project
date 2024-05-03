@@ -1,4 +1,4 @@
-package ie_ucd_comp20050;
+package ie.ucd.comp20050.component;
 
 public class Arrow{
     private int[] x = new int[2];

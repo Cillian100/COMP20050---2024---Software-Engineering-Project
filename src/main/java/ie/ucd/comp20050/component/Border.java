@@ -1,6 +1,6 @@
-package ie_ucd_comp20050;
+package ie.ucd.comp20050.component;
 
-public class Border { // @TODO Refactor using streamlined data structure
+public class Border {
 
     /**
      * Array of X coordinates for all points. Identical index of 'y' forms border point.

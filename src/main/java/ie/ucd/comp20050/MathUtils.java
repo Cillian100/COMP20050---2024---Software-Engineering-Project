@@ -1,6 +1,5 @@
-package ie_ucd_comp20050;
+package ie.ucd.comp20050;
 
-import java.lang.ref.Reference;
 import java.util.TreeSet;
 
 /**
@@ -22,6 +21,19 @@ public final class MathUtils {
     }
 
     /**
+     * Calculates the distance between two points.
+     *
+     * @param x1 X-position of point 1
+     * @param y1 Y-position of point 1
+     * @param x2 X-position of point 2
+     * @param y2 Y-position of point 2
+     * @return double, distance between the points
+     */
+    public static double pointsDistance(double x1, double y1, double x2, double y2) {
+        return Math.hypot(x1 - x2, y1 - y2);
+    }
+
+    /**
      * Calculates the window modifier, which adjusts element sizing for screen resolution.
      *
      * @param height integer, window height size
@@ -31,12 +43,6 @@ public final class MathUtils {
     public static double calculateWindowModifier(int height) {
         return ((double) height / 18) / 100;
     }
-
-    /*
-    Steven: I don't understand what the use for this method is.
-    Modulo operator returns original input if modulo is higher than input. Eg., 21 % 100 = 21.
-    Only difference this does from modulo is that, if mod is not equal to or higher than div, it adds range.
-     */
 
     /**
      * Unknown function.
@@ -50,8 +56,7 @@ public final class MathUtils {
         return modulus >= dividend ? dividend : (dividend % modulus) + range;
     }
 
-    public static double convertToNormal(double angle)
-    {
+    public static double convertToNormal(double angle) {
        if (angle <= 360 && angle >= 0) return angle;
        angle %= 360;
        if (angle > -1 && angle < 0 ) return 0;
@@ -59,34 +64,28 @@ public final class MathUtils {
        return angle;
     }
 
-    public static double distance(double x1, double y1, double x2, double y2){
-        return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
-    }
-
-
-    public static boolean twoCircleColl(double x1,double y1,double x2,double y2,double r1,double r2)
-    {
-        double g = squ(x1 - x2)  + squ(y1 - y2);
-        double r = squ(r1 + r2 );
+    public static boolean twoCircleColl(double x1,double y1,double x2,double y2,double r1,double r2) {
+        double g = squareDouble(x1 - x2)  + squareDouble(y1 - y2);
+        double r = squareDouble(r1 + r2 );
         return r >= g;
-
     }
 
-    public static double closestValue(double x,TreeSet<Double> set)
-    {
+    public static double closestValue(double x,TreeSet<Double> set) {
         Double clx,clx2;
         clx = set.floor(x);
         if (clx == null) clx =Double.MAX_VALUE;
         clx2 = set.ceiling(x);
         if (clx2 == null) clx2 = Double.MAX_VALUE;
         return Math.abs(clx - x ) < Math.abs(clx2-x)? clx:clx2;
-
     }
 
-
-
-    public static double squ(double x)
-    {
+    /**
+     * Calculates the square of some double
+     *
+     * @param x double, number to be squared
+     * @return square of x
+     */
+    public static double squareDouble(double x) {
         return x * x;
     }
 
