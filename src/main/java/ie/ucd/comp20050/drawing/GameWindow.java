@@ -35,18 +35,15 @@ public class GameWindow extends JFrame implements ActionListener {
      */
     private final Dimension WINDOW_SIZE = new Dimension(WINDOW_HEIGHT, WINDOW_HEIGHT);
 
-    /**
-     * ArrayList storage for Atoms.
-     * Set with {@link #setAtoms(ArrayList)}
-     */
-    private ArrayList<Atom> atoms;
 
-    GamePanel panel = new GamePanel(WINDOW_SIZE, WINDOW_MODIFIER); // Temporary, for interacting with the GamePanel
-
+    public GamePanel panel;  // Temporary, for interacting with the GamePanel
+    public static boolean test = false;
     /**
      * Constructor. WIP, this Javadoc will be completed at a later date.
      */
     public GameWindow(String title, boolean resizable) {
+        GamePanel.test = GameWindow.test;
+        panel = new GamePanel(WINDOW_SIZE, WINDOW_MODIFIER);
         this.add(panel);
         this.setPreferredSize(WINDOW_SIZE);
         this.setTitle(title);
@@ -56,6 +53,7 @@ public class GameWindow extends JFrame implements ActionListener {
         this.setVisible(true);
         this.setLocationRelativeTo(null);
     }
+
 
     /**
      * Causes the game clock to start, triggers actionPerformed every 50ms.
@@ -77,13 +75,5 @@ public class GameWindow extends JFrame implements ActionListener {
         if(panel.zip) panel.laser.move();
     }
 
-    /**
-     * Replaces the Atom list used for drawing
-     * @param input ArrayList<Atom>, list of Atoms to draw
-     */
-    public void setAtoms(ArrayList<Atom> input) { // These are generated in Main!!
-        atoms = input;
-        panel.setAtoms(atoms);
-    }
 
 }

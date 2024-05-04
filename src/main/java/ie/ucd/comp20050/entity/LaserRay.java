@@ -31,6 +31,8 @@ public class LaserRay {
 
     private double angle;
 
+    private double speed = 25;
+
     /**
      * Constructor
      * @param inputX int, starting X position of the ray
@@ -62,8 +64,8 @@ public class LaserRay {
     }
 
     public void move() {
-        posX = posX - ( (Math.cos(Math.toRadians(angle))) * 20);
-        posY = posY + ( (Math.sin(Math.toRadians(angle))) * 20);
+        posX = posX - ( (Math.cos(Math.toRadians(angle))) * speed);
+        posY = posY + ( (Math.sin(Math.toRadians(angle))) * speed);
     }
 
     public void stop() {

@@ -18,29 +18,23 @@ import ie.ucd.comp20050.component.Hexagon;
 import ie.ucd.comp20050.entity.*;
 
 public class GamePanel extends JPanel implements KeyListener {
-    int x[];
-    int y[];
-    int counter;
     Hexagon[] hexagons = new Hexagon[100];
     Arrow[] arr = new Arrow[100];
     LaserRay laser = new LaserRay(-10, -10, 10, 10);
     Border border;
-    int hexagonCounter=0, hexagonCounter2=0;
+    int  hexagonCounter2=0;
     int posPointer = 0;
     boolean zip=false;
     Random random = new Random();
     int laserCount =0;
     boolean setter=true;
     Character setterInput;
-    String toDisplay="Player 2 enter position of atom 1 (and press Enter): ";
     String toDisplay3="Enter Atom guess 1 (and press Enter): ";
     String toDisplay2="";
     String holderString="";
-    int setterCounter=0;
     int guessCounter=0;
     ArrayList<Integer> starting = new ArrayList<Integer>();
     ArrayList<Integer> ending = new ArrayList<Integer>();
-    boolean userGenerated=true;
     boolean guessing=false;
     int gameOver=0;
     ArrayList<Integer> enterAndExit = new ArrayList<Integer>();
@@ -79,6 +73,9 @@ public class GamePanel extends JPanel implements KeyListener {
      */
     Graphics graph;
 
+   public static boolean test = false;
+
+
     public GamePanel(Dimension windowSizeInput, double windowModifierInput){
         SCREEN_HEIGHT = (int) windowSizeInput.getHeight();
         SCREEN_WIDTH = (int) windowSizeInput.getHeight();
@@ -93,9 +90,8 @@ public class GamePanel extends JPanel implements KeyListener {
         calculateGrid();
         border = new Border(hexagons);
         calculateArrows();
-        if(userGenerated){
-            //makeAtomsSetterInput();
-            makeAtoms();
+        if(test){
+            makeAtomsTest();
         }else{
             makeAtoms();
         }
@@ -113,30 +109,6 @@ public class GamePanel extends JPanel implements KeyListener {
         atoms = input;
     }
 
-    private void makeAtomsSetterInput(){
-        //Scanner myObj = new Scanner(System.in);
-
-        atoms = new ArrayList<Atom>();
-        
-        //Integer input = myObj.nextInt();
-        for(int a=0;a<atomnum;a++){
-        atoms.add(new Atom(
-                hexagons[0].getMiddleX(),
-                hexagons[0].getMiddleY(),
-                atomRadius,
-                ringRadius,
-                hexagondistance
-                 ,0
-             ));
-        }
-    }
-
-    private void changeAtoms(int hexagon, int counter){
-        atoms.get(setterCounter).change(
-            hexagons[hexagon].getMiddleX(),
-            hexagons[hexagon].getMiddleY(),
-            hexagon);
-    }
 
      private void makeAtoms()
      {  
@@ -159,6 +131,28 @@ public class GamePanel extends JPanel implements KeyListener {
                      ,hex
              ));
          }
+        setter=false;
+    }
+
+    static private int[]positions;
+   static public void setTestInput(int a,int b,int c,int d,int e)
+    {
+        int[] arr = {a,b,c,d,e};
+        positions = arr;
+    }
+    private void makeAtomsTest()
+    {
+        atoms = new ArrayList<Atom>();
+        for(int i = 0; i < atomnum; i++) {
+            atoms.add(new Atom(
+                    hexagons[positions[i]].getMiddleX(),
+                    hexagons[positions[i]].getMiddleY(),
+                    atomRadius,
+                    ringRadius,
+                    hexagondistance
+                    ,positions[i]
+            ));
+        }
         setter=false;
     }
 
@@ -266,8 +260,8 @@ public class GamePanel extends JPanel implements KeyListener {
         double x2 = border.getX()[a2];
         double y1 = border.getY()[a];
         double y2 = border.getY()[a2];
-        double px = laser.getMidX();
-        double py = laser.getMidY();
+        double px = laser.getPosX();//laser.getMidX();
+        double py = laser.getPosY();//laser.getMidY();
         double len1= MathUtils.pointsDistance(x1, y1, px, py);
         double len2=MathUtils.pointsDistance(x2, y2, px, py);
         double len3=MathUtils.pointsDistance(x1, y1, x2, y2);
@@ -294,9 +288,10 @@ public class GamePanel extends JPanel implements KeyListener {
                 bounce *= 2;
             else if (tmp == Atom.EXIT_ABSORB) {
                 //to avoid overlapping radii
+//                ending.add(100);
                 for (;a< atomnum;a++)
                     atoms.get(a).setCollideStatus(true);
-                zip = false; break;
+                bounce = Atom.ABSORB; break;
             }
             else if (tmp == Atom.EXIT_180) //this overpowers everything excpet for absorb at edge
             {
@@ -304,7 +299,7 @@ public class GamePanel extends JPanel implements KeyListener {
                 for (;a< atomnum;a++)
                 {
                    if (atoms.get(a).collide(laser,hexxs,hexys)==Atom.EXIT_ABSORB) {
-                       zip = false;
+                       bounce = Atom.ABSORB;
                    }
                 }
                 break;
@@ -351,16 +346,6 @@ public class GamePanel extends JPanel implements KeyListener {
         return false;
     }
 
-    private void moveAtoms(int a) {
-        for(int i = 0; i < atomnum; i++)
-            atoms.get(i).change(100, 100, a);
-    }
-
-    private boolean atomNotAlrThere(int x) {
-        for (Atom a : atoms)
-            if (a.getHexagon() == x) return false;
-        return true;
-    }
 
     /**
      * Primarily handles drawing of game itself, along with other game logic.
@@ -368,19 +353,18 @@ public class GamePanel extends JPanel implements KeyListener {
      */
     private void drawBackground(ArrayList<Atom> atoms) {
         if(gameOver!=2) {
-            //moveAtoms(41);
             if(round){
                 round=false;
                 ending.add(enterAndExit.get(2));
+                System.out.println("hello" + ending.size() + " " + starting.size());
                 //starting.add(enterAndExit.get(0));
                 enterAndExit.clear();
             }
             collisionDetection();
-            if(setter) {
-                drawRay(laser);
+            if(test) {
                 drawAtoms(atoms);
+                drawRay(laser);
             }
-            //drawRay(laser);
 
             graph.setColor(Color.red); // Unsure what this is colouring!
 
@@ -506,8 +490,10 @@ public class GamePanel extends JPanel implements KeyListener {
             for(int a=starting.size();a>0;a--){
                 starting.remove(a-1);
             }
+            ending.clear();
         }
     }
+
 
     /**
      * Draws hexagons on the board
@@ -541,8 +527,6 @@ public class GamePanel extends JPanel implements KeyListener {
             graph.drawString(Integer.toString(i), arr[i].getLineX()[1], arr[i].getLineY()[1]);
         }
 
-        //temerary for testing
-        //graph.drawLine(border.getASpecificX(43), border.getASpecificY(43), border.getASpecificX(44), border.getASpecificY(44));
     }
 
     /**
@@ -573,27 +557,31 @@ public class GamePanel extends JPanel implements KeyListener {
     @Override
     public void keyReleased(KeyEvent event) {
         /* Ensures user pressed W or space */
-        if(!setter && !guessing){
+        if(!setter && !guessing && !zip){
             switch(event.getKeyCode()) {
                 case KeyEvent.VK_W, KeyEvent.VK_SPACE -> System.out.println("Ray Spawned");
-//                case KeyEvent.VK_G -> {playerhandler.endTurn(laserCount); return;}
                 case KeyEvent.VK_G ->{ guessing = true; return;}
                 default -> { return; }
             }
 
         /* Spawns ray */
+            spawnRay();
+    }
+
+
+    }
+
+    public void spawnRay()
+    {
+
         laser.set(arr[posPointer].getLineX()[0], arr[posPointer].getLineY()[0], arr[posPointer].getAngle());
         starting.add(posPointer);
         enterAndExit.clear();
         zip = true;
         player[playerCounter].incrementScore();
         laserCount++;
-    }
-
-       //reset atom collisions
         for (Atom atom:atoms)
             atom.setCollideStatus(false);
-
     }
 
     @Override
@@ -601,16 +589,15 @@ public class GamePanel extends JPanel implements KeyListener {
         setterInput = e.getKeyChar();
     }
 
-    public void resetGame()
+    //for testing
+    public ArrayList<Integer> getEndings()
     {
-        laserCount = 0;
-        atoms.clear();
-        makeAtomsSetterInput();
-        laser = new LaserRay(-10, -10, 10, 10);
+       return ending;
     }
 
-    public ArrayList<Atom> getAtoms() { return atoms; }
-
-    public int getAtomNum() { return atomnum; }
-    public int getHexagonNum() {return hexagonCounter2;}
+    public void testLaserShoot(int pos)
+    {
+       posPointer = pos;
+       spawnRay();
+    }
 }
