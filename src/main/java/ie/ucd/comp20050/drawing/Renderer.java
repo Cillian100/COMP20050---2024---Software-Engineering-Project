@@ -21,7 +21,7 @@ public class Renderer {
         gp = a;
         graph = a.graph;
         modifier = gp.modifier;
-        numHexagons = gp.hexagonCounter2;
+        numHexagons = gp.hexagonCounter;
     }
 
     /**

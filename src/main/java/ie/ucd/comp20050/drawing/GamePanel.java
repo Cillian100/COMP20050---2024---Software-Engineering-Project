@@ -20,20 +20,19 @@ public class GamePanel extends JPanel implements KeyListener {
     Arrow[] arr = new Arrow[100];
     LaserRay laser = new LaserRay(-10, -10, 10, 10);
     Border border;
-    int  hexagonCounter2=0;
+    int hexagonCounter =0;
     int posPointer = 0;
     boolean zip=false;
     Random random = new Random();
     int laserCount =0;
     Character setterInput;
     String toDisplay3="Enter Atom guess 1 (and press Enter): ";
-    String toDisplay2="";
+    String currGuess ="";
     String holderString="";
     int guessCounter=0;
     ArrayList<Integer> starting = new ArrayList<Integer>();
     ArrayList<Integer> ending = new ArrayList<Integer>();
     boolean guessing=false;
-    int gameOver=0;
     ArrayList<Integer> enterAndExit = new ArrayList<Integer>();
     boolean round=false;
 
@@ -108,11 +107,11 @@ public class GamePanel extends JPanel implements KeyListener {
      {  
          boolean already[] = new boolean[100];
          atoms = new ArrayList<Atom>();
-        int hex = random.nextInt(hexagonCounter2);
+        int hex = random.nextInt(hexagonCounter);
          for(int i = 0; i < atomnum; i++) {
              while (already[hex])
              {
-                  hex = random.nextInt(hexagonCounter2);
+                  hex = random.nextInt(hexagonCounter);
              }
              already[hex] = true;
              atoms.add(new Atom(
@@ -147,8 +146,8 @@ public class GamePanel extends JPanel implements KeyListener {
     private void calculateGrid(){
         yConstant=(int)(SCREEN_WIDTH/2 - 50 * modifier);
         xConstant=(int)(SCREEN_WIDTH/2 - 87 * modifier);
-        hexagons[hexagonCounter2] = new Hexagon(xConstant, yConstant, modifier, 60);
-        hexagonCounter2++;
+        hexagons[hexagonCounter] = new Hexagon(xConstant, yConstant, modifier, 60);
+        hexagonCounter++;
         int angle=180;
         int flip=1;
         int flip2=flip;
@@ -156,8 +155,8 @@ public class GamePanel extends JPanel implements KeyListener {
 
 
         for(int a=0;a<6;a++){
-            hexagons[hexagonCounter2] = new Hexagon(hexagons[0].getX()[a], hexagons[0].getY()[a], modifier, angle);
-            hexagonCounter2++;
+            hexagons[hexagonCounter] = new Hexagon(hexagons[0].getX()[a], hexagons[0].getY()[a], modifier, angle);
+            hexagonCounter++;
             angle=angle+60;
             angle=angle%360;
         }
@@ -167,11 +166,11 @@ public class GamePanel extends JPanel implements KeyListener {
             for(int b=0;b<6;b++){
                 for(int a=0;a<layer2;a++){
                     if(b+a==5+layer2-1){
-                        hexagons[hexagonCounter2] = new Hexagon(hexagons[flip2].getX()[b], hexagons[flip2].getY()[b], modifier, angle);
+                        hexagons[hexagonCounter] = new Hexagon(hexagons[flip2].getX()[b], hexagons[flip2].getY()[b], modifier, angle);
                     }else{
-                        hexagons[hexagonCounter2] = new Hexagon(hexagons[flip+a].getX()[b], hexagons[flip+a].getY()[b], modifier, angle);
+                        hexagons[hexagonCounter] = new Hexagon(hexagons[flip+a].getX()[b], hexagons[flip+a].getY()[b], modifier, angle);
                     }
-                    hexagonCounter2++;
+                    hexagonCounter++;
                 }
                 angle=angle+60;
                 angle=angle%360;
@@ -323,14 +322,14 @@ public class GamePanel extends JPanel implements KeyListener {
      * Primarily handles drawing of game itself, along with other game logic.
      */
     private void gameLoop() {
-        if(gameOver!=2) {
+        if(playerCounter!=2) {
             if(round){
                 round=false;
                 ending.add(enterAndExit.get(2));
                 enterAndExit.clear();
             }
             collisionDetection();
-            if(test) {
+            if(!test) {
                 drawer.drawEntities();
             }
 
@@ -412,7 +411,7 @@ public class GamePanel extends JPanel implements KeyListener {
         if(setterInput!=null){
             if((int)setterInput==10){
                 try{
-                    holder=Integer.parseInt(toDisplay2);
+                    holder=Integer.parseInt(currGuess);
                 }catch(Exception E){
                     holderString="invalid input!";
                     holder=100;
@@ -429,10 +428,10 @@ public class GamePanel extends JPanel implements KeyListener {
                     guessCounter++;
                 }
                 toDisplay3="Enter Atom guess " + (guessCounter + 1) + " (and press Enter): ";
-                toDisplay2="";
+                currGuess ="";
             }else{
                 toDisplay3=toDisplay3.concat(String.valueOf(setterInput));
-                toDisplay2=toDisplay2.concat(String.valueOf(setterInput));
+                currGuess = currGuess.concat(String.valueOf(setterInput));
             }
         }
 
@@ -441,10 +440,10 @@ public class GamePanel extends JPanel implements KeyListener {
         setterInput=null;
         if(guessCounter==5){
             guessed = new boolean[61];
-            gameOver++;
             guessing=false;
-            playerCounter=1;
+            playerCounter++;
             laserCount=0;
+            holderString = "";
             guessCounter=0;
             toDisplay3="Enter Atom guess 1 (and press Enter): ";
             if (test) makeAtomsTest();
@@ -546,8 +545,7 @@ public class GamePanel extends JPanel implements KeyListener {
     static private int[]positions;
     static public void setTestInput(int a,int b,int c,int d,int e)
     {
-        int[] arr = {a,b,c,d,e};
-        positions = arr;
+        positions = new int[]{a,b,c,d,e};
     }
     private void makeAtomsTest()
     {
