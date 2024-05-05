@@ -45,7 +45,6 @@ public final class MathUtils {
     }
 
     /**
-     * Unknown function.
      *
      * @param dividend integer, number to perform modulus on
      * @param modulus  integer, modulus number

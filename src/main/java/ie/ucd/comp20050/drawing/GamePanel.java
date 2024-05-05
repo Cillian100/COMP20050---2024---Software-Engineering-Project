@@ -36,7 +36,6 @@ public class GamePanel extends JPanel implements KeyListener {
     ArrayList<Integer> enterAndExit = new ArrayList<Integer>();
     boolean round=false;
 
-    /* LEGACY VARS */
     double modifier;
     int SCREEN_HEIGHT;
     int SCREEN_WIDTH;
@@ -59,7 +58,6 @@ public class GamePanel extends JPanel implements KeyListener {
     double ringRadius;
 
     Renderer drawer;
-    /* UPDATED VARS */
 
     /**
      * ArrayList storage for Atoms in the game.
@@ -137,11 +135,6 @@ public class GamePanel extends JPanel implements KeyListener {
 
     /*
     Generates the grid, and creates the count of hexagons.
-    @TODO Refactor. 'Grid making' should be moved to main, switching an array for ArrayList. Eliminate hexcounter.
-
-    Steven: This seems to always make 61 hexagons on my desktop, haven't yet tested on mac;
-    is there ever a realistic scenario where this should be dynamic?
-    Monopoly is always the same board size, I would imagine this game is much the same (I don't know it that well).
      */
     private void calculateGrid(){
         yConstant=(int)(SCREEN_WIDTH/2 - 50 * modifier);
@@ -214,8 +207,8 @@ public class GamePanel extends JPanel implements KeyListener {
         double x2 = border.getX()[a2];
         double y1 = border.getY()[a];
         double y2 = border.getY()[a2];
-        double px = laser.getPosX();//laser.getMidX();
-        double py = laser.getPosY();//laser.getMidY();
+        double px = laser.getPosX();
+        double py = laser.getPosY();
         double len1= MathUtils.pointsDistance(x1, y1, px, py);
         double len2=MathUtils.pointsDistance(x2, y2, px, py);
         double len3=MathUtils.pointsDistance(x1, y1, x2, y2);

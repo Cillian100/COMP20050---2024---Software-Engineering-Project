@@ -8,10 +8,6 @@ import java.awt.event.ActionListener;
 
 import static ie.ucd.comp20050.MathUtils.calculateWindowModifier;
 
-/*
-This class will contain the APIs for interacting with the game's window.
-This will amalgamate many features from GameFrame and GamePanel, although much will be divested.
-*/
 /**
  * APIs for interacting with the Game Window.
  * Implements ActionListener for redrawing.
@@ -34,11 +30,8 @@ public class GameWindow extends JFrame implements ActionListener {
     private final Dimension WINDOW_SIZE = new Dimension(WINDOW_HEIGHT, WINDOW_HEIGHT);
 
 
-    public GamePanel panel;  // Temporary, for interacting with the GamePanel
+    public GamePanel panel;
     public static boolean test = false;
-    /**
-     * Constructor. WIP, this Javadoc will be completed at a later date.
-     */
     public GameWindow(String title, boolean resizable) {
         GamePanel.test = GameWindow.test;
         panel = new GamePanel(WINDOW_SIZE, WINDOW_MODIFIER);
@@ -55,7 +48,6 @@ public class GameWindow extends JFrame implements ActionListener {
 
     /**
      * Causes the game clock to start, triggers actionPerformed every 50ms.
-     * May become unnecessary and deprecated in a future version.
      * {@link #actionPerformed(ActionEvent)}
      */
     public void startGame() { // May need to become async if non-blockable functionality added. @TODO Revisit startGame

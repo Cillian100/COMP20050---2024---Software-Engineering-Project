@@ -38,21 +38,6 @@ public class Hexagon {
         }
     }
 
-    public void xHexagon(){
-        x[1] = (x[0]+(sinSixty*100*modifier));
-        x[2] = (x[0]+(sinSixty*100*2*modifier));
-        x[3] = (x[0]+(sinSixty*100*2*modifier));
-        x[4] = (x[0]+(sinSixty*100*modifier));
-        x[5]=x[0];
-    }
-
-    public void yHexagon(){
-        y[1] = (y[0]-(cosSixty*100*modifier));
-        y[2] = y[0];
-        y[3] = (y[0]+(100*modifier));
-        y[4] = (y[0]+(100*modifier))+(cosSixty*100*modifier);
-        y[5] = (y[0]+(100*modifier));
-    }
 
     public double[] getX() {
         return x;

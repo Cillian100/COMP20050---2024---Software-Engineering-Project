@@ -30,7 +30,7 @@ public class Atom {
         mhexagondistance = hexagondistancei;
         ringradius =ringradiusi;//100;
         hexagon = hexagonInput;
-    } //@TODO hexagondistancei is uneeded for this just needed for way draw is implemented rn
+    }
 
     /**
      * Retrieve the index of the Atom's hexagon
