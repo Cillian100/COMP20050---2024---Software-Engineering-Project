@@ -24,12 +24,18 @@ public class Renderer {
         numHexagons = gp.hexagonCounter2;
     }
 
+    /**
+     * draws board background (hexagons and border)
+     */
     void drawBackGround()
     {
        drawHexagons();
         drawBorder();
     }
 
+    /**
+     * draws atoms and rays
+     */
     void drawEntities()
     {
         drawAtoms(gp.getAtoms());

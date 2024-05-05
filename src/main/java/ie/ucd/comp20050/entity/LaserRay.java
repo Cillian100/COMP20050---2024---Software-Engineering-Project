@@ -68,11 +68,6 @@ public class LaserRay {
         posY = posY + ( (Math.sin(Math.toRadians(angle))) * speed);
     }
 
-    public void stop() {
-        posX = 1000;
-        posY = 1000;
-    }
-
     public void set(int inputX, int inputY, double inputAngle) {
         posX = inputX;
         posY = inputY;

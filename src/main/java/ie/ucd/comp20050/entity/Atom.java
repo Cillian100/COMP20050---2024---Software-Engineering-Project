@@ -15,7 +15,6 @@ public class Atom {
 
     private double mx;
     private double my;
-    //these two should be changed reallu tbh
     private double circleradius;
     private double ringradius;
 
@@ -24,14 +23,6 @@ public class Atom {
     private double mhexagondistance;
 
     public static final double EXIT_180=-4 ,EXIT_ABSORB = -3,DOUBLE = -2,ABSORB = -1;
-    /**
-     * Constructor.
-     * @param hexagonInput integer, index of Atom's hexagon
-     */
-    public Atom(int hexagonInput) {
-        hexagon = hexagonInput;
-    }
-    //need for collisions
     public Atom(double x,double y,double circleradiusi,double ringradiusi,double hexagondistancei, int hexagonInput) {
         mx = x;
         my = y;
@@ -49,7 +40,14 @@ public class Atom {
         return hexagon;
     }
 
-    //here because it's kinda specific to collision function
+
+    /**
+     *formats angle of laser based on atom position,here because it's kinda specific to collision function
+     * @param angle angle to be formatted
+     * @param dx difference between laser x and atom x,in format laserx - atomx
+     * @param dy difference between laser y and atom y,in format lasery - atomx
+     * @return formatted angle
+     */
     private double formatAngle(double angle,double dx,double dy)
     {
         if (dy <= 0 && dx <= 0)//2nd quad
@@ -67,6 +65,12 @@ public class Atom {
         }
     }
 
+    /**
+     * gets angle between laser and x axis
+     * @param x xpos of laser
+     * @param y ypos of laser
+     * @return angle between laser and x axis,in degrees
+     */
     double getLaserAndXAxisAngle(double x,double y)
     {
         double dy = y - my;
@@ -79,6 +83,13 @@ public class Atom {
         return angle;
     }
 
+    /**
+     *
+     * @param x xpos of laser
+     * @param y ypos of laser
+     * @param angle angle of laser
+     * @return true if laser moving away from this atom, false otherwise
+     */
     boolean LaserMovingAway(double x,double y,double angle)
     {
         double oldDis = MathUtils.squareDouble(y - my) + MathUtils.squareDouble(x - mx);
@@ -89,6 +100,13 @@ public class Atom {
 
     }
 
+    /**
+     * checks to see if this atom collides with a laser at a given position and resolves it appropriately
+     * @param l laser to check for collision
+     * @param hexxs x values of hexagons on board,for centering
+     * @param hexys y values of hexagons on board,for centering
+     * @return
+     */
     public double collide(LaserRay l, TreeSet<Double> hexxs, TreeSet<Double> hexys)
     {
         double laserRadius = l.getRadius();

@@ -56,6 +56,11 @@ public final class MathUtils {
         return modulus >= dividend ? dividend : (dividend % modulus) + range;
     }
 
+    /**
+     * converts an angle in different formats to a number between 0 and 360
+     * @param angle angle to be converted
+     * @return converted angle
+     */
     public static double convertToNormal(double angle) {
        if (angle <= 360 && angle >= 0) return angle;
        angle %= 360;
@@ -64,12 +69,28 @@ public final class MathUtils {
        return angle;
     }
 
+    /**
+     * collision handler for two circles
+     * @param x1 circle 1 x pos
+     * @param y1 circle 1 ypos
+     * @param x2 circle 2 x pos
+     * @param y2 circle 2 ypos
+     * @param r1 circle 1 radius
+     * @param r2 circle 2 radius
+     * @return true if they  collide, false otherwise
+     */
     public static boolean twoCircleColl(double x1,double y1,double x2,double y2,double r1,double r2) {
         double g = squareDouble(x1 - x2)  + squareDouble(y1 - y2);
         double r = squareDouble(r1 + r2 );
         return r >= g;
     }
 
+    /**
+     * gets closest value to x in a given set
+     * @param x the x
+     * @param set the given set
+     * @return the closest value
+     */
     public static double closestValue(double x,TreeSet<Double> set) {
         Double clx,clx2;
         clx = set.floor(x);

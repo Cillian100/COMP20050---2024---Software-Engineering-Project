@@ -1,12 +1,10 @@
 package ie.ucd.comp20050.drawing;
 
-import ie.ucd.comp20050.entity.Atom;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import static ie.ucd.comp20050.MathUtils.calculateWindowModifier;
 

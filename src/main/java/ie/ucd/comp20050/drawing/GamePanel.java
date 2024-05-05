@@ -101,7 +101,9 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
 
-
+    /**
+     * makes 5 atoms placed randomly
+     */
      private void makeAtoms()
      {  
          boolean already[] = new boolean[100];
@@ -225,65 +227,89 @@ public class GamePanel extends JPanel implements KeyListener {
     }
 
     /**
-     * Method to handle collision detection with atoms
+     * Method to handle collision detection
      */
     private void collisionDetection() {
         if (!zip) return;
-        double tmp= 0;
-        double bounce=0;
 
-        for(int a=0;a<atomnum;a++){
-            tmp = atoms.get(a).collide(laser,hexxs,hexys);
-            if (tmp != 0 && tmp != Atom.DOUBLE && tmp != Atom.EXIT_180 && tmp != Atom.EXIT_ABSORB)
-                bounce = tmp;
-            else if (tmp == Atom.DOUBLE)
-                bounce *= 2;
-            else if (tmp == Atom.EXIT_ABSORB) {
-                //to avoid overlapping radii
-                for (;a< atomnum;a++)
-                    atoms.get(a).setCollideStatus(true);
-                bounce = Atom.ABSORB; break;
-            }
-            else if (tmp == Atom.EXIT_180) //this overpowers everything excpet for absorb at edge
-            {
-                bounce = 180;
-                for (;a< atomnum;a++)
-                {
-                   if (atoms.get(a).collide(laser,hexxs,hexys)==Atom.EXIT_ABSORB) {
-                       bounce = Atom.ABSORB;
-                   }
-                }
-                break;
-           }
-        }
-        if (bounce == Atom.ABSORB){
-            ending.add(100);
-            zip = false;
-        }
-        //if it has collided and not at edge centre
-        double x = MathUtils.closestValue(laser.getPosX(),hexxs);
-        double y = MathUtils.closestValue(laser.getPosY(),hexys);
-        if (bounce != 0 && tmp != Atom.EXIT_180) {
-                laser.setPosX(x);
-                laser.setPosY(y);
-        }
+        atomCollision();
 
-        laser.setCollideStatus(LaserRay.CollideState.never);
-        laser.addBounce(bounce);
-
-        for(int a=0;a<54;a++){
-            int result=borderDetection(a);
-            if(result!=100){
-                enterAndExit.add(result);
-                if(enterAndExit.size()>2){
-                    round=true;
-                    zip = false;
-                }else{
-                    round=false;
-                }
-            }
-        }
+        borderCollision();
     }
+
+    /**
+     * Collision detection with atoms
+     */
+  void atomCollision()
+  {
+
+      double tmp= 0;
+      double bounce=0;
+
+      for(int a=0;a<atomnum;a++){
+          tmp = atoms.get(a).collide(laser,hexxs,hexys);
+          if (tmp != 0 && tmp != Atom.DOUBLE && tmp != Atom.EXIT_180 && tmp != Atom.EXIT_ABSORB)
+              bounce = tmp;
+          else if (tmp == Atom.DOUBLE)
+              bounce *= 2;
+          else if (tmp == Atom.EXIT_ABSORB) {
+              //to avoid overlapping radii
+              for (;a< atomnum;a++)
+                  atoms.get(a).setCollideStatus(true);
+              bounce = Atom.ABSORB; break;
+          }
+          else if (tmp == Atom.EXIT_180) //this overpowers everything except for absorb at edge
+          {
+              bounce = 180;
+              for (;a< atomnum;a++)
+              {
+                  if (atoms.get(a).collide(laser,hexxs,hexys)==Atom.EXIT_ABSORB) {
+                      bounce = Atom.ABSORB;
+                  }
+              }
+              break;
+          }
+      }
+      if (bounce == Atom.ABSORB){
+          ending.add(100);
+          zip = false;
+      }
+      //if it has collided and not at edge centre
+      if (bounce != 0 && tmp != Atom.EXIT_180) {
+          centreLaser();
+      }
+      laser.setCollideStatus(LaserRay.CollideState.never);
+      laser.addBounce(bounce);
+
+  }
+
+    /**
+     * Collision detection with border
+     */
+  void borderCollision()
+  {
+      for(int a=0;a<54;a++){
+          int result=borderDetection(a);
+          if(result!=100){
+              enterAndExit.add(result);
+              if(enterAndExit.size()>2){
+                  round=true;
+                  zip = false;
+              }else{
+                  round=false;
+              }
+          }
+      }
+  }
+
+  void centreLaser()
+  {
+
+      double x = MathUtils.closestValue(laser.getPosX(),hexxs);
+      double y = MathUtils.closestValue(laser.getPosY(),hexys);
+      laser.setPosX(x);
+      laser.setPosY(y);
+  }
 
     private boolean guessAtoms(int answer) {
         for(int a=0; a<atomnum; a++){
@@ -476,6 +502,9 @@ public class GamePanel extends JPanel implements KeyListener {
 
     }
 
+    /**
+     * spawns a ray at the current position pointer
+     */
     public void spawnRay()
     {
 

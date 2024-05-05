@@ -8,10 +8,11 @@ public class AtomTest {
 
     @Test
     void testAtom() {
-        Atom atom = new Atom(5);
+        Atom atom = new Atom(0,0,0,0,0,5);
         assertEquals(5, atom.getHexagon());
         atom.setHexagon(10);
         assertEquals(10, atom.getHexagon());
+
     }
 
 }
