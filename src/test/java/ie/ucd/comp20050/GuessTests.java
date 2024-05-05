@@ -13,7 +13,7 @@ public class GuessTests {
     {
 
         KeyEvent g =  new KeyEvent(testHelpers.gp, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0, KeyEvent.VK_G, 'G');;
-        testHelpers.gp.keyReleased(g);
+        testHelpers.gw.keyReleased(g);
         testHelpers.waitABit(100);
     }
 
@@ -26,12 +26,12 @@ public class GuessTests {
         {
             c = s.charAt(i);
              g = new KeyEvent(testHelpers.gp, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_4, c);
-            testHelpers.gp.keyTyped(g);
+            testHelpers.gw.keyTyped(g);
             testHelpers.waitABit(100);
         }
         c = 10;
         g = new KeyEvent(testHelpers.gp, KeyEvent.KEY_PRESSED, System.currentTimeMillis(), 0, KeyEvent.VK_4, c);
-        testHelpers.gp.keyTyped(g);
+        testHelpers.gw.keyTyped(g);
         testHelpers.waitABit(100);
     }
 

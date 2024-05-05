@@ -96,7 +96,7 @@ public class Renderer {
      * @param list ArrayList<Atom>, input list of Atoms to draw
      */
     private void drawAtoms(ArrayList<Atom> list) {
-        if(list == null) return; // Temp. necessary to alleviate bug on macOS @TODO Better explanation
+        if(list == null) return; // Alleviate bug on macOS
         graph.setColor(Color.blue);
         for(Atom atom : list) {
             int posX = (int) gp.hexagons[atom.getHexagon()].getMiddleX();

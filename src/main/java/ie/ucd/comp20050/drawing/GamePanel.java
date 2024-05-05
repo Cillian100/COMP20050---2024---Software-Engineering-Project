@@ -15,7 +15,7 @@ import ie.ucd.comp20050.component.Arrow;
 import ie.ucd.comp20050.component.Border;
 import ie.ucd.comp20050.component.Hexagon;
 
-public class GamePanel extends JPanel implements KeyListener {
+public class GamePanel extends JPanel {
     Hexagon[] hexagons = new Hexagon[100];
     Arrow[] arr = new Arrow[100];
     LaserRay laser = new LaserRay(-10, -10, 10, 10);
@@ -77,7 +77,6 @@ public class GamePanel extends JPanel implements KeyListener {
         atomRadius = ringRadius / 2;
         this.setBackground(Color.black);
         this.setFocusable(true);
-        this.addKeyListener(this);
         player[0] = new Player(0);
         player[1] = new Player(0);
         calculateGrid();
@@ -330,48 +329,6 @@ public class GamePanel extends JPanel implements KeyListener {
         }
     }
 
-
-    /**
-     * Handles user input for moving pointer position.
-     * User can use 'A' or 'Left arrow' to move counter-clockwise around grid.
-     * User can use 'D' or 'Right arrow' to move clockwise around grid.
-     * User position wraps around at indexes 0 and 53.
-     * @param event event to be processed
-     */
-    @Override
-    public void keyPressed(KeyEvent event) {
-        /* Ensures user pressed a movement key */
-        switch(event.getKeyCode()) {
-            case KeyEvent.VK_A, KeyEvent.VK_LEFT -> posPointer--;
-            case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> posPointer++;
-        }
-
-        /* Resets pointer position if it moves out of bounds */
-        if(posPointer < 0) posPointer = 53;
-        else if(posPointer > 53) posPointer = 0;
-    }
-
-    /**
-     * Handles user input for ray spawning.
-     * User can use 'W' or 'Space' to spawn a ray at his current pointer position.
-     * @param event event to be processed
-     */
-    @Override
-    public void keyReleased(KeyEvent event) {
-        /* Ensures user pressed W or space */
-        if(!guessing && !zip){
-            switch(event.getKeyCode()) {
-                case KeyEvent.VK_W, KeyEvent.VK_SPACE -> spawnRay();
-                case KeyEvent.VK_G ->{ guessing = true; return;}
-                default -> { return; }
-            }
-
-
-    }
-
-
-    }
-
     /**
      * spawns a ray at the current position pointer
      */
@@ -386,11 +343,6 @@ public class GamePanel extends JPanel implements KeyListener {
         laserCount++;
         for (Atom atom:atoms)
             atom.setCollideStatus(false);
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e){ 
-        setterInput = e.getKeyChar();
     }
 
     ArrayList<Atom> getAtoms() {return atoms;}
