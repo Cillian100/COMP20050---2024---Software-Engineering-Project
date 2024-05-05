@@ -102,7 +102,7 @@ public class GameWindow extends JFrame implements ActionListener, KeyListener {
         if(!panel.guessing && !panel.zip){
             switch(event.getKeyCode()) {
                 case KeyEvent.VK_W, KeyEvent.VK_SPACE -> {panel.spawnRay(); break;}
-                case KeyEvent.VK_G ->{ panel.guessing = true; break; }
+                case KeyEvent.VK_G ->{ panel.guessing = true; panel.setTextInput(null); break; }
             }
         }
     }

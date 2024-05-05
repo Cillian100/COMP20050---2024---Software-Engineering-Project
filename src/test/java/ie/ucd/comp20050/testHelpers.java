@@ -6,17 +6,18 @@ import ie.ucd.comp20050.drawing.GameWindow;
 public class testHelpers {
 
     static GameWindow gw;
-    static GamePanel gp;
 
-    static void setup(int pos1,int pos2,int pos3,int pos4,int pos5)
+    static GamePanel setup(int pos1,int pos2,int pos3,int pos4,int pos5)
     {
-
+        int a;
+        while (GameWindow.test == true)a =  1+1;
         GameWindow.test = true;
         GamePanel.setTestInput(pos1,pos2,pos3,pos4,pos5);
         gw = new GameWindow("Test",false);
-        gp = gw.panel;
+        GamePanel gp = gw.panel;
         gw.startGame();
-        waitABit(1000);
+        waitABit(100);
+        return gp;
     }
 
     static void waitABit(long ms)
@@ -29,10 +30,16 @@ public class testHelpers {
         }
     }
 
-    static void testLaser(int pos)
+    static void testLaser(int pos,GamePanel gp)
     {
 
         gp.testLaserShoot(pos);
         waitABit(2000);
     }
+
+    static void EndTest()
+    {
+        GameWindow.test = false;
+    }
+
 }

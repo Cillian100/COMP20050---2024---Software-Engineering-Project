@@ -189,6 +189,11 @@ public class GamePanel extends JPanel {
         }
     }
 
+    public void exitGame()
+    {
+       System.exit(0);
+    }
+
 
 
     public int borderDetection(int a){

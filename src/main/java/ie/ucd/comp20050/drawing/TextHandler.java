@@ -74,7 +74,7 @@ public class TextHandler {
 
         if(gp.getTextInput()!=null){
             if(gp.getTextInput()=='g'){
-                System.exit(0);
+                gp.exitGame();
             }
         }
     }
@@ -109,7 +109,7 @@ public class TextHandler {
      */
     void getGuesses(){
         graph.setColor(Color.red);
-        int holder;
+        int holder = 0;
         if(gp.getTextInput()!=null){
             if((int)gp.getTextInput()==10){
                 try{
@@ -149,8 +149,8 @@ public class TextHandler {
             graph.drawString(holderString, (int) (50 * modifier), (int) (80 * modifier));
         }
         if(guessCounter==5){
-            holderString = "";
             guessed = new boolean[61];
+            holderString = "";
             gp.reset();
             gp.setTextInput(null);
             guessCounter=0;
