@@ -82,6 +82,7 @@ public class GuessTests {
 
         testHelpers.setup(1,2,3,4,5);
         Turn(3);
+        testHelpers.waitABit(1000);
         Turn(3);
         assertEquals(testHelpers.gp.getPlayerScore(2),testHelpers.gp.getPlayerScore(1));
     }

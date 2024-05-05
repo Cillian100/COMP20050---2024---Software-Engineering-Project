@@ -13,7 +13,7 @@ public class testHelpers {
         GameWindow game = new GameWindow("Test",false);
         gp = game.panel;
         game.startGame();
-        waitABit(100);
+        waitABit(1000);
     }
 
     static void waitABit(long ms)

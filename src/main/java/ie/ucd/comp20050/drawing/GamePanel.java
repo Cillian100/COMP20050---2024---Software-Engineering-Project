@@ -25,16 +25,13 @@ public class GamePanel extends JPanel implements KeyListener {
     boolean zip=false;
     Random random = new Random();
     int laserCount =0;
-    Character setterInput;
-    String toDisplay3="Enter Atom guess 1 (and press Enter): ";
-    String currGuess ="";
-    String holderString="";
-    int guessCounter=0;
+    Character setterInput = null;
     ArrayList<Integer> starting = new ArrayList<Integer>();
     ArrayList<Integer> ending = new ArrayList<Integer>();
     boolean guessing=false;
     ArrayList<Integer> enterAndExit = new ArrayList<Integer>();
     boolean round=false;
+    TextHandler textRenderer;
 
     double modifier;
     int SCREEN_HEIGHT;
@@ -42,7 +39,7 @@ public class GamePanel extends JPanel implements KeyListener {
     int xConstant=SCREEN_HEIGHT/2;
     int yConstant=SCREEN_WIDTH/2;
 
-    boolean [] guessed;
+
     double hexagondistance ;
     final int atomnum = 5;
 
@@ -92,9 +89,8 @@ public class GamePanel extends JPanel implements KeyListener {
             makeAtoms();
         }
 
-        guessed = new boolean[61];
         drawer = new Renderer(this);
-
+        textRenderer = new TextHandler(this);
     }
 
 
@@ -303,12 +299,6 @@ public class GamePanel extends JPanel implements KeyListener {
       laser.setPosY(y);
   }
 
-    private boolean guessAtoms(int answer) {
-        for(int a=0; a<atomnum; a++){
-            if(atoms.get(a).getHexagon() == answer) return true;
-        }
-        return false;
-    }
 
 
     /**
@@ -322,135 +312,23 @@ public class GamePanel extends JPanel implements KeyListener {
                 enterAndExit.clear();
             }
             collisionDetection();
-            if(!test) {
+            if(test) {
                 drawer.drawEntities();
             }
 
-            graph.setColor(Color.red); // this is colouring text
 
             if(guessing) {
-                getGuesses();
+                textRenderer.drawText(TextHandler.state.guessing);
             }
             else {
-                drawPlayerGameplayInfo();
+                textRenderer.drawText(TextHandler.state.info);
             }
             drawer.drawBackGround();
         }
         else {
-            displayEndScreen();
+                textRenderer.drawText(TextHandler.state.end);
         }
     }
-
-    void displayEndScreen() {
-        graph.setFont(new Font("TimesRoman", Font.PLAIN, (int)(100*modifier))); 
-        int lineHeight = graph.getFontMetrics().getHeight();
-        graph.setColor(Color.RED);
-        //game over box
-        graph.drawRect((int)(100*modifier), (int)(100*modifier), (int)(SCREEN_WIDTH-(200*modifier)), (int)(SCREEN_HEIGHT*0.3));
-        int x=(int)(100*modifier);
-        int y=(int)(150*modifier)+(int)(SCREEN_HEIGHT*0.3);
-        graph.drawRect(x, y,(int)(SCREEN_WIDTH-(200*modifier)), (int)(SCREEN_HEIGHT*0.5));
-        graph.drawString("GAME OVER", (int)(SCREEN_WIDTH/2-(300*modifier)), (int)((100*modifier)+(SCREEN_HEIGHT*0.3)/2));
-        int textPosition;
-        if (player[1].getScore() == player[0].getScore())
-        {
-            textPosition=(int)(SCREEN_WIDTH/2-(400*modifier));
-            graph.drawString("Draw!" + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 1 score = " + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight* 2);
-            graph.drawString("Player 2 score = " + player[1].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight* 3);
-        }
-        else if(player[0].getScore()<player[1].getScore()) {
-            textPosition=(int)(SCREEN_WIDTH/2-(600*modifier));
-            graph.drawString("Player 1 wins, score = " + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 2 loses, score = " + player[1].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight*2);
-        }
-        else {
-            textPosition=(int)(SCREEN_WIDTH/2-(600*modifier));
-            graph.drawString("Player 2 wins, score = " + player[1].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight);
-            graph.drawString("Player 1 loses, score = " + player[0].getScore(), textPosition, SCREEN_HEIGHT/2 + lineHeight*2);
-        }
-
-        graph.drawString("Press g to exit game", textPosition, SCREEN_HEIGHT/2 + lineHeight*5);
-
-        if(setterInput!=null){
-            if(setterInput=='g'){
-                System.exit(0);
-            }
-        }
-    }
-
-    void drawPlayerGameplayInfo(){
-        String startingPositions = "Atom starting & ending positions:\n";
-        graph.drawString("Player " + (playerCounter +1) +  ": Press a and d to move. Press and release w to shoot,press and release g to guess", (int)(50*modifier), (int)(50*modifier));
-        graph.drawString("lasers shot: " + laserCount, (int)(25*modifier), (int)(100*modifier));
-        int why=(int)(1500*modifier);
-        int lineHeight = graph.getFontMetrics().getHeight();
-        graph.drawString(startingPositions, (int)(1400*modifier), why);
-        for(int a=ending.size() - 1;a >= 0;a--){
-            if(ending.get(a)==100){
-                graph.drawString("starting: " + starting.get(a).toString() + "    ending: absorbed", (int)(1400*modifier), why+=lineHeight);
-            }else{
-                graph.drawString("starting: " + starting.get(a).toString() + "    ending: " + ending.get(a), (int)(1400*modifier), why+=lineHeight);
-            }
-        }
-        setterInput=null;
-    }
-
-
-
-
-    void getGuesses(){
-        int holder;
-        if(setterInput!=null){
-            if((int)setterInput==10){
-                try{
-                    holder=Integer.parseInt(currGuess);
-                }catch(Exception E){
-                    holderString="invalid input!";
-                    holder=100;
-                }
-
-                if(holder<=60 && !guessed[holder]){
-                    guessed[holder] = true;
-                    if(guessAtoms(holder)){
-                        holderString="correct!";
-                    }else{
-                        holderString="wrong";
-                        player[playerCounter].add5ToScore();
-                    }
-                    guessCounter++;
-                }
-                toDisplay3="Enter Atom guess " + (guessCounter + 1) + " (and press Enter): ";
-                currGuess ="";
-            }else{
-                toDisplay3=toDisplay3.concat(String.valueOf(setterInput));
-                currGuess = currGuess.concat(String.valueOf(setterInput));
-            }
-        }
-
-        graph.drawString(toDisplay3, (int)(50*modifier), (int)(50*modifier));
-        graph.drawString(holderString, (int)(50*modifier), (int)(80*modifier));
-        setterInput=null;
-        if(guessCounter==5){
-            guessed = new boolean[61];
-            guessing=false;
-            playerCounter++;
-            laserCount=0;
-            holderString = "";
-            guessCounter=0;
-            toDisplay3="Enter Atom guess 1 (and press Enter): ";
-            if (test) makeAtomsTest();
-            else makeAtoms();
-            for(int a=starting.size();a>0;a--){
-                starting.remove(a-1);
-            }
-            ending.clear();
-        }
-    }
-
-
-
-
 
 
     /**
@@ -518,11 +396,32 @@ public class GamePanel extends JPanel implements KeyListener {
     ArrayList<Atom> getAtoms() {return atoms;}
     LaserRay getLaser() {return laser;}
 
-    //for testing mainly
-    public ArrayList<Integer> getEndings()
+    Character getTextInput() {return setterInput;}
+
+    public ArrayList<Integer> getEndings() { return ending;}
+    public ArrayList<Integer> getStartings() { return starting;}
+
+    public Player getPlayer() {return player[playerCounter];}
+
+    public void reset()
     {
-       return ending;
+        guessing=false;
+        playerCounter++;
+        laserCount=0;
+
+        if (test) makeAtomsTest();
+        else makeAtoms();
+        for(int a=starting.size();a>0;a--){
+            starting.remove(a-1);
+        }
+        ending.clear();
+
     }
+
+
+
+    void setTextInput(Character c) {setterInput = c;}
+    //for testing mainly
 
     public int getPlayerScore(int p)
     {

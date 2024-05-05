@@ -10,6 +10,7 @@ public class CollisionTests{
    {
       testHelpers.setup(1,2,3,4,5);
       testHelpers.testLaser(3);
+      testHelpers.waitABit(1000);
       assertEquals(1,testHelpers.gp.getEndings().size());
       assertEquals(13,testHelpers.gp.getEndings().get(0));
    }
@@ -20,6 +21,7 @@ public class CollisionTests{
 
       testHelpers.setup(1,3,43,44,45);
       testHelpers.testLaser(35);
+      testHelpers.waitABit(1000);
       assertEquals(1,testHelpers.gp.getEndings().size());
       assertEquals(35,testHelpers.gp.getEndings().get(0));
 
@@ -31,6 +33,7 @@ public class CollisionTests{
 
       testHelpers.setup(1,0,43,44,45);
       testHelpers.testLaser(37);
+      testHelpers.waitABit(1000);
       assertEquals(1,testHelpers.gp.getEndings().size());
       assertEquals(44,testHelpers.gp.getEndings().get(0));
    }
@@ -52,6 +55,7 @@ public class CollisionTests{
 
       testHelpers.setup(1,6,43,44,45);
       testHelpers.testLaser(37);
+      testHelpers.waitABit(1000);
       assertEquals(1,testHelpers.gp.getEndings().size());
       assertEquals(100,testHelpers.gp.getEndings().get(0));
 
@@ -65,6 +69,7 @@ public class CollisionTests{
       testHelpers.testLaser(3);
       testHelpers.testLaser(4);
       testHelpers.testLaser(5);
+      testHelpers.waitABit(1000);
       assertEquals(3,testHelpers.gp.getEndings().size());
       assertEquals(100,testHelpers.gp.getEndings().get(0));
       assertEquals(100,testHelpers.gp.getEndings().get(1));
