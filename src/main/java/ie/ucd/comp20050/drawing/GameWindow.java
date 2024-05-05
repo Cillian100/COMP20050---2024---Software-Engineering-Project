@@ -77,6 +77,8 @@ public class GameWindow extends JFrame implements ActionListener, KeyListener {
      */
     @Override
     public void keyPressed(KeyEvent event) {
+        //shouldnt be able to move while guessing
+        if (panel.guessing) return;
         /* Ensures user pressed a movement key */
         switch(event.getKeyCode()) {
             case KeyEvent.VK_A, KeyEvent.VK_LEFT -> panel.posPointer--;
@@ -95,12 +97,12 @@ public class GameWindow extends JFrame implements ActionListener, KeyListener {
      */
     @Override
     public void keyReleased(KeyEvent event) {
+        /* Ensures user pressed a movement key */
         /* Ensures user pressed W or space */
         if(!panel.guessing && !panel.zip){
             switch(event.getKeyCode()) {
-                case KeyEvent.VK_W, KeyEvent.VK_SPACE -> panel.spawnRay();
-                case KeyEvent.VK_G ->{ panel.guessing = true; return;}
-                default -> { return; }
+                case KeyEvent.VK_W, KeyEvent.VK_SPACE -> {panel.spawnRay(); break;}
+                case KeyEvent.VK_G ->{ panel.guessing = true; break; }
             }
         }
     }

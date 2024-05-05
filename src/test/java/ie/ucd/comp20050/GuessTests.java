@@ -38,12 +38,13 @@ public class GuessTests {
 
     void Turn(int numRight)
     {
-
+        int mod = numRight < 0? -1:1;
         setupGuess();
         for (int i= 1; i <= 5;i++) {
-        if (i <= numRight)    guessNumber(i);
-        else guessNumber(i + 20);
+        if (i <= numRight)    guessNumber(i * mod);
+        else guessNumber((i + 20)* mod);
         }
+        testHelpers.waitABit(500);
     }
 
     @Test
@@ -62,7 +63,11 @@ public class GuessTests {
 
         testHelpers.setup(1,2,3,4,5);
         Turn(0);
+        //invalid inputs
+        Turn(-1);
+        Turn(0);
         assertEquals(25,testHelpers.gp.getPlayerScore(1));
+        assertEquals(25,testHelpers.gp.getPlayerScore(2));
     }
 
     @Test

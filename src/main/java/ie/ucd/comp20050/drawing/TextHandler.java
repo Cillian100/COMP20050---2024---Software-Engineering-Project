@@ -115,11 +115,10 @@ public class TextHandler {
                 try{
                     holder=Integer.parseInt(currGuess);
                 }catch(Exception E){
-                    holderString="invalid input!";
                     holder=100;
                 }
 
-                if(holder<=60 && !guessed[holder]){
+                if(holder >= 0 &&holder<=60 && !guessed[holder]){
                     guessed[holder] = true;
                     if(guessAtoms(holder)){
                         holderString="correct!";
@@ -128,6 +127,13 @@ public class TextHandler {
                         gp.getPlayer().add5ToScore();
                     }
                     guessCounter++;
+                }
+                else
+                {
+                    if (holder == 100) holderString="invalid input!";
+                    else if (holder > 60) holderString = "Guess number too big!";
+                    else if (holder < 0)holderString = "Guess number too small!";
+                    else if (guessed[holder]) holderString = "You already guessed that";
                 }
                 toDisplay3="Enter Atom guess " + (guessCounter + 1) + " (and press Enter): ";
                 currGuess ="";
