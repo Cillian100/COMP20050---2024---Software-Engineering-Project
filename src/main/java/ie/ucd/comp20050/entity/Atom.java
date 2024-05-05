@@ -41,16 +41,6 @@ public class Atom {
         hexagon = hexagonInput;
     } //@TODO hexagondistancei is uneeded for this just needed for way draw is implemented rn
 
-    public double getX(){
-        return mx;
-    }
-
-    public void change(double x, double y, int hexagonInput){
-        mx = x;
-        my = y;
-        hexagon = hexagonInput;
-    }
-
     /**
      * Retrieve the index of the Atom's hexagon
      * @return integer, hexagon index
@@ -77,29 +67,46 @@ public class Atom {
         }
     }
 
+    double getLaserAndXAxisAngle(double x,double y)
+    {
+        double dy = y - my;
+        double dx =   x - mx;
+        double slope = dy/dx;
+        double angle = Math.atan(slope);
+        angle = Math.toDegrees(angle);
+        angle = formatAngle(angle,dx,dy);
+        angle = MathUtils.convertToNormal(angle);
+        return angle;
+    }
+
+    boolean LaserMovingAway(double x,double y,double angle)
+    {
+        double oldDis = MathUtils.squareDouble(y - my) + MathUtils.squareDouble(x - mx);
+        double t4 = y + 20 * Math.sin(angle);
+        double t5 = x -  20 * Math.cos(angle);
+        double newDis = MathUtils.squareDouble(t4 - my) + MathUtils.squareDouble(t5 - mx) ;
+        return newDis > oldDis;
+
+    }
 
     public double collide(LaserRay l, TreeSet<Double> hexxs, TreeSet<Double> hexys)
     {
-double laserradius = l.getRadius();
+        double laserRadius = l.getRadius();
         double bounce;
         float modifier = 1.0f;
         double x = l.getPosX();
         double y = l.getPosY();
-        double oolddir = l.getDirection();
-        double o = Math.toRadians(oolddir);
+        double laserAngleDegrees = l.getDirection();
+        double laserAngleRadians = Math.toRadians(laserAngleDegrees);
 
        //if they dont collide no effect
-       if (!MathUtils.twoCircleColl(x,y,mx,my,ringradius,laserradius)) return 0;
+       if (!MathUtils.twoCircleColl(x,y,mx,my,ringradius,laserRadius)) return 0;
 
-       if (MathUtils.twoCircleColl(x,y,mx,my,circleradius,laserradius)){
+       if (MathUtils.twoCircleColl(x,y,mx,my,circleradius,laserRadius)){
             return EXIT_ABSORB;
         }
         // if atom moving away it has already collided, or it is at edge
-        double durian = MathUtils.squareDouble(y - my) + MathUtils.squareDouble(x - mx);
-        double t4 = y + 20 * Math.sin(o);
-        double t5 = x -  20 * Math.cos(o);
-        double duri = MathUtils.squareDouble(t4 - my) + MathUtils.squareDouble(t5 - mx) ;
-        if (duri > durian) {
+        if (LaserMovingAway(x,y,laserAngleRadians)) {
             if (!mcollided) {
                 mcollided = true;
                 return EXIT_180;
@@ -110,29 +117,23 @@ double laserradius = l.getRadius();
         mcollided = true;
 
         //centre ball in current hexagon
-        x = MathUtils.closestValue(x -5 * Math.cos(o),hexxs);
-        y = MathUtils.closestValue(y +5 * Math.sin(o),hexys);
+        x = MathUtils.closestValue(x -5 * Math.cos(laserAngleRadians),hexxs);
+        y = MathUtils.closestValue(y +5 * Math.sin(laserAngleRadians),hexys);
 
 
-        //angle between line between laser is at right now and x axis
-        double dy = y - my;
-        double dx =   x - mx;
-        double slope = dy/dx;
-        double angle = Math.atan(slope);
-        angle = Math.toDegrees(angle);
-        angle = formatAngle(angle,dx,dy);
-        angle = MathUtils.convertToNormal(angle);
-        oolddir = MathUtils.convertToNormal(oolddir);
-       //if it has absorbed previously multply by 2
+        //angleBetweenLaserAndXAxis between line between laser is at right now and x axis
+        double angleBetweenLaserAndXAxis = getLaserAndXAxisAngle(x,y);
+
+        laserAngleDegrees = MathUtils.convertToNormal(laserAngleDegrees);
+
+       //if it has absorbed previously multiply by 2
         if (l.getCollideStatus() == LaserRay.CollideState.absorb ) modifier = 2;
         //it has collide not absorb
         else if ( l.getCollideStatus() == LaserRay.CollideState.bounce) modifier = 3;
 
-        //if angle is the same as path the laser is going into the atom
-        if (Math.abs(angle - oolddir) <4 )
+        //if angleBetweenLaserAndXAxis is the same as path the laser is going into the atom
+        if (Math.abs(angleBetweenLaserAndXAxis - laserAngleDegrees) <4 )
         {
-
-
             //if already collided multiply previous by 2
          if ( l.getCollideStatus() == LaserRay.CollideState.bounce) {
                 return DOUBLE;
@@ -143,12 +144,12 @@ double laserradius = l.getRadius();
             l.setCollideStatus(LaserRay.CollideState.absorb);
         }
         else {
-            //the bad one collides with atom
-            double hh = Math.toRadians(oolddir + 60);
-            double tmpx = x - mhexagondistance * Math.cos(hh);
-            double tmpy = y + mhexagondistance * Math.sin(hh);
+            //go in direction away from atom
+            double tmpAngle = Math.toRadians(laserAngleDegrees + 60);
+            double tmpx = x - mhexagondistance * Math.cos(tmpAngle);
+            double tmpy = y + mhexagondistance * Math.sin(tmpAngle);
             //if using 60 collides with atom return -60
-            if (MathUtils.twoCircleColl(tmpx,tmpy,mx,my,circleradius,laserradius))
+            if (MathUtils.twoCircleColl(tmpx,tmpy,mx,my,circleradius,laserRadius))
                 bounce =  -60;
             else {
                 bounce = 60;

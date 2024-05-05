@@ -32,7 +32,6 @@ public class Border {
 
                 // Collects 'top middle' point of border hexagon (facing out)
                 x[countPoints] = (int) hexagons[position].getX()[i];
-                System.out.println(position +" " +  hexagons[position].getX()[i] + " " + hexagons[position].getY()[i] + " " + countPoints);
                 y[countPoints] = (int) hexagons[position].getY()[i];
                 countPoints++;
 
@@ -51,12 +50,6 @@ public class Border {
     public int[] getX() {
         return x;
     }
-    public int getASpecificX(int a){
-        return x[a];
-    }   
-    public int getASpecificY(int a){
-        return y[a];
-    }
 
     /**
      * Method to obtain Y coordinates of all points
@@ -74,7 +67,4 @@ public class Border {
         return countPoints;
     }
 
-    public Boolean passedBorder() { // @TODO Implement detection
-        return false;
-    }
 }

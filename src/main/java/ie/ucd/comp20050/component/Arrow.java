@@ -5,8 +5,6 @@ public class Arrow{
     private int[] y = new int[2];
     private int[] lineX = new int[2];
     private int[] lineY = new int[2];
-    private int[] triangleX = new int[3];
-    private int[] triangeY = new int[3];
     private double modifier=0;
     private double angle;
     private double cos;
